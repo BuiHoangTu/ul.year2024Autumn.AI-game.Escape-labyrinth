@@ -73,3 +73,7 @@ crashlytics-build.properties
 
 # Other crash report files
 mono_crash.*.blob
+
+# Files that want to be ignored
+*.ignored
+*.ignoring
