@@ -8,7 +8,7 @@ Using [Micromamba](https://mamba.readthedocs.io/en/latest/installation/micromamb
 
 ### Export 
 ```bash
-micromamba env export -n unity2022-ai > env.yml && echo -e "  - pip:\n$(micromamba run -n unity2022-ai pip freeze | sed 's/^/    - /')" >> env.yml
+micromamba env export -n unity2022-ai > env.yml && echo -e "- pip:\n$(micromamba run -n unity2022-ai pip freeze | sed 's/^/    - /')" >> env.yml
 ```
 
 ### Import 
