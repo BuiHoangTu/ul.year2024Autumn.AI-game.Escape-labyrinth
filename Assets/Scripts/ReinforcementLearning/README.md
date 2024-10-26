@@ -4,7 +4,7 @@ This folder is used for implementing AI including but not limited to setting up 
 Check [this video](https://www.youtube.com/watch?v=zPFU30tbyKs) for more information.
 
 ## Environment
-Using Micromamba for vscode integration.
+Using [Micromamba](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html) for vscode integration.
 
 ### Export 
 ```bash
