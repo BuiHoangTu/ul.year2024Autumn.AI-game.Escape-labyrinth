@@ -16,8 +16,10 @@ micromamba env export > env.yml
     ```bash
     micromamba env create -f env.yml
     ```
+
 1. Activate
     ```bash
     micromamba activate <env name>
     ```
-
+    
+    **Linux**: install `libtinfo5`
