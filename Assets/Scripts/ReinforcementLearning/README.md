@@ -8,7 +8,7 @@ Using Micromamba for vscode integration.
 
 ### Export 
 ```bash
-micromamba env export > env.yml
+micromamba env export -n unity2022-ai > env.yml && echo -e "  - pip:\n$(micromamba run -n unity2022-ai pip freeze | sed 's/^/    - /')" >> env.yml
 ```
 
 ### Import 
@@ -19,7 +19,7 @@ micromamba env export > env.yml
 
 1. Activate
     ```bash
-    micromamba activate <env name>
+    micromamba activate unity2022-ai
     ```
     
     **Linux**: install `libtinfo5`
