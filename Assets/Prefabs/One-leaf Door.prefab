@@ -388,3 +388,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09d46fd3971a69e98ca50c481734ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  closingForce: 2
+  DOOR_CLOSE_ANGLE: 1
