@@ -1,0 +1,5 @@
+# vscode
+.vscode
+
+# mlagents-learn generated files
+results/ppo
