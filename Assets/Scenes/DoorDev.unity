@@ -327,8 +327,8 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_LinearDrag: 5
+  m_AngularDrag: 5
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -397,6 +397,10 @@ PrefabInstance:
     - target: {fileID: 1580440816367574493, guid: 9495e3891d02e5802b2e30f8555cc2d7, type: 3}
       propertyPath: m_UseMotor
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5753131058078358407, guid: 9495e3891d02e5802b2e30f8555cc2d7, type: 3}
+      propertyPath: closingForce
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6564102577868309449, guid: 9495e3891d02e5802b2e30f8555cc2d7, type: 3}
       propertyPath: m_Name
