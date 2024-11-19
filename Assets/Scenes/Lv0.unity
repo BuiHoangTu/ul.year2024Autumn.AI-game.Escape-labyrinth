@@ -8366,6 +8366,7 @@ GameObject:
   - component: {fileID: 963115009}
   - component: {fileID: 963115008}
   - component: {fileID: 963115010}
+  - component: {fileID: 963115011}
   m_Layer: 0
   m_Name: Escape Door
   m_TagString: Untagged
@@ -8565,6 +8566,18 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &963115011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963115006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bcf3bfc5194209c1ac78011053a95f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &964888103
 PrefabInstance:
   m_ObjectHideFlags: 0
