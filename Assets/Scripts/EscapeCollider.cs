@@ -9,9 +9,10 @@ public class EscapeCollider : MonoBehaviour
     {
         Debug.Log("Collide with " + other.tag);
 
-        if (other.tag == "Player")
+        if (other.CompareTag("Escaper"))
         {
-            // Win 
+            // Escaper wins
+            GameManager.Instance.EscaperWin();
         }
     }
 }
