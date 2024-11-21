@@ -80,3 +80,7 @@ mono_crash.*.blob
 # Files that want to be ignored
 *.ignored
 *.ignoring
+
+# MLAgents
+Assets/ML-Agents
+Assets/ML-Agents.meta
