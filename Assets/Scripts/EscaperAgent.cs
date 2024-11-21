@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Sensors;
 
 public class EscaperAgent : Agent
 {
@@ -45,12 +46,20 @@ public class EscaperAgent : Agent
         }
     }
 
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        // Add observation for the position of the agent
+        sensor.AddObservation((Vector2)this.transform.position);
+    }
+
 
     public override void OnActionReceived(ActionBuffers actions)
     {
         bool isBurst = actions.DiscreteActions[0] == 1;
         Moving moving = (Moving)actions.DiscreteActions[1];
         Turning turning = (Turning)actions.DiscreteActions[2];
+
+        Debug.Log("isBurst: " + isBurst + ", moving: " + moving + ", turning: " + turning);
 
         switch (moving)
         {
@@ -77,8 +86,6 @@ public class EscaperAgent : Agent
                 // Do nothing
                 break;
         }
-
-        Debug.Log(actions.ContinuousActions.Length);
     }
 
     public void Win()
