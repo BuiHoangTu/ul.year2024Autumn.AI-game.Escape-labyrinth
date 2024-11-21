@@ -25,7 +25,8 @@ public class CharacterMove : MonoBehaviour
     {
         ARROR,
         WASD,
-        IJKL
+        IJKL,
+        NONE
     }
 
     // Update is called once per frame
@@ -33,76 +34,99 @@ public class CharacterMove : MonoBehaviour
     {
         isMoving = false;
 
-        switch (this.keyMoveType) {
+        bool FORWARD = true;
+        bool BACKWARD = false;
+
+        bool LEFT = true;
+        bool RIGHT = false;
+
+        switch (this.keyMoveType)
+        {
             case KeyMoveType.ARROR:
                 // turning
-                if (Input.GetKey(KeyCode.LeftArrow)) {
-                    this.Rotate(this.angularSpeed * Time.deltaTime);
+                if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    this.Rotate(LEFT);
                 }
-                if (Input.GetKey(KeyCode.RightArrow)) {
-                    this.Rotate(-this.angularSpeed * Time.deltaTime);
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    this.Rotate(RIGHT);
                 }
 
                 // moving
-                if (Input.GetKey(KeyCode.UpArrow)) {
-                    this.Move(this.speed);
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    this.Move(FORWARD);
                 }
-                if (Input.GetKey(KeyCode.DownArrow)) {
-                    this.Move(-this.speed);
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    this.Move(BACKWARD);
                 }
 
                 break;
             case KeyMoveType.WASD:
                 // turning
-                if (Input.GetKey(KeyCode.A)) {
-                    this.Rotate(this.angularSpeed * Time.deltaTime);
+                if (Input.GetKey(KeyCode.A))
+                {
+                    this.Rotate(LEFT);
                 }
-                if (Input.GetKey(KeyCode.D)) {
-                    this.Rotate(-this.angularSpeed * Time.deltaTime);
+                if (Input.GetKey(KeyCode.D))
+                {
+                    this.Rotate(RIGHT);
                 }
 
                 // moving
-                if (Input.GetKey(KeyCode.W)) {
-                    this.Move(this.speed);
+                if (Input.GetKey(KeyCode.W))
+                {
+                    this.Move(FORWARD);
                 }
-                if (Input.GetKey(KeyCode.S)) {
-                    this.Move(-this.speed);
+                if (Input.GetKey(KeyCode.S))
+                {
+                    this.Move(BACKWARD);
                 }
 
                 break;
             case KeyMoveType.IJKL:
                 // turning
-                if (Input.GetKey(KeyCode.J)) {
-                    this.Rotate(this.angularSpeed * Time.deltaTime);
+                if (Input.GetKey(KeyCode.J))
+                {
+                    this.Rotate(LEFT);
                 }
-                if (Input.GetKey(KeyCode.L)) {
-                    this.Rotate(-this.angularSpeed * Time.deltaTime);
+                if (Input.GetKey(KeyCode.L))
+                {
+                    this.Rotate(RIGHT);
                 }
 
                 // moving
-                if (Input.GetKey(KeyCode.I)) {
-                    this.Move(this.speed);
+                if (Input.GetKey(KeyCode.I))
+                {
+                    this.Move(FORWARD);
                 }
-                if (Input.GetKey(KeyCode.K)) {
-                    this.Move(-this.speed);
+                if (Input.GetKey(KeyCode.K))
+                {
+                    this.Move(!FORWARD);
                 }
 
                 break;
         }
 
-        if (!isMoving) {
+        if (!isMoving)
+        {
             this.rb.velocity = Vector2.zero;
         }
     }
 
-    private void Move(float speed)
+    public void Move(bool forward)
     {
+        float speed = forward ? this.speed : -this.speed;
         this.rb.velocity = this.heading * speed;
         this.isMoving = true;
     }
 
-    private void Rotate(float angle)
+    public void Rotate(bool left)
     {
+        float angle = this.angularSpeed * Time.deltaTime;
+        angle = left ? angle : -angle;
         this.heading = Quaternion.Euler(0, 0, angle) * this.heading;
         this.transform.rotation = Quaternion.LookRotation(Vector3.forward, this.heading);
     }
