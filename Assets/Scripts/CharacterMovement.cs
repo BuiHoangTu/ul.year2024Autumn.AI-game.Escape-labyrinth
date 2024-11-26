@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static MovementController;
+using static MovementInput;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class CharacterMovement : MonoBehaviour
     public float speed = 5.0f;
     public float angularSpeed = 200.0f;
     public float maxBurstEnergy = MAX_BURST_ENERGY;
-    public float burstMultiplier = 2.0f; 
+    public float burstMultiplier = 1.5f;
     public float burstConsumptionRate = 20.0f;
     public float burstRechargeRate = 10.0f;
     public KeyMoveType keyMoveType = KeyMoveType.ARROR;
@@ -20,7 +20,7 @@ public class CharacterMovement : MonoBehaviour
     private float burstEnergy;
     private bool isBursting;
     private bool needRechargeBurst;
-    private readonly MovementController movementController = new();
+    private readonly MovementInput movementController = new();
     private Vector3 heading;
     private Rigidbody2D rb;
     private MovingType moving;
@@ -105,28 +105,41 @@ public class CharacterMovement : MonoBehaviour
         if (this.isBursting && this.moving != MovingType.STOP)
         {
             this.burstEnergy -= this.burstConsumptionRate * Time.deltaTime;
+            if (this.burstEnergy <= 0)
+            {
+                this.burstEnergy = 0;
+                this.StopBurst();
+            }
         }
         // Recharging Burst
         else
         {
-            if (this.burstEnergy <= this.maxBurstEnergy * 1/2)
-            {
-                this.needRechargeBurst = true;
-            }
-
             this.burstEnergy += this.burstRechargeRate * Time.deltaTime;
-        }
 
-        // Burst Energy bounds
-        if (this.burstEnergy <= 0)
-        {
-            this.burstEnergy = 0;
-            this.isBursting = false;
+            if (this.burstEnergy >= this.maxBurstEnergy)
+            {
+                this.burstEnergy = this.maxBurstEnergy;
+                this.needRechargeBurst = false;
+            }
         }
-        else if (this.burstEnergy >= this.maxBurstEnergy)
+    }
+
+    private void StartBurst()
+    {
+        if (this.needRechargeBurst)
         {
-            this.burstEnergy = this.maxBurstEnergy;
-            this.needRechargeBurst = false;
+            return;
+        }
+        this.isBursting = true;
+    }
+
+    private void StopBurst()
+    {
+        this.isBursting = false;
+
+        if (this.burstEnergy <= this.maxBurstEnergy * 1 / 2)
+        {
+            this.needRechargeBurst = true;
         }
     }
 
@@ -147,7 +160,17 @@ public class CharacterMovement : MonoBehaviour
     public bool Bursting
     {
         get => this.isBursting;
-        set => this.isBursting = value;
+        set
+        {
+            if (value)
+            {
+                this.StartBurst();
+            }
+            else
+            {
+                this.StopBurst();
+            }
+        }
     }
 
     // public float BurstEnergyPercentage

@@ -4,7 +4,7 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
-using static MovementController;
+using static MovementInput;
 
 public class EscaperAgent : Agent
 {
@@ -12,7 +12,7 @@ public class EscaperAgent : Agent
 
 
     private CharacterMovement characterMovement;
-    private MovementController heuristicsMove;
+    private MovementInput heuristicsMove;
 
 
     private void Awake()
@@ -40,7 +40,7 @@ public class EscaperAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        this.heuristicsMove = new MovementController
+        this.heuristicsMove = new MovementInput
         {
             keyMoveType = this.characterMovement.keyMoveType
         };

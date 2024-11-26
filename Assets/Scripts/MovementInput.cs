@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MovementController
+public class MovementInput
 {
     public KeyMoveType keyMoveType = KeyMoveType.ARROR;
 
@@ -47,18 +47,5 @@ public class MovementController
         WASD,
         IJKL,
         NONE
-    }
-
-    public enum MovingType
-    {
-        STOP,
-        FORWARD,
-        BACKWARD
-    }
-    public enum TurningType
-    {
-        STOP,
-        LEFT,
-        RIGHT
     }
 }
