@@ -28,6 +28,16 @@ public class MovementController
         };
     }
 
+    public bool GetBurstInput()
+    {
+        return keyMoveType switch
+        {
+            KeyMoveType.ARROR => Input.GetKey(KeyCode.Space),
+            KeyMoveType.WASD => Input.GetKey(KeyCode.Z),
+            KeyMoveType.IJKL => Input.GetKey(KeyCode.M),
+            _ => false,
+        };
+    }
 
 
     /*************** Support enums ***************/
