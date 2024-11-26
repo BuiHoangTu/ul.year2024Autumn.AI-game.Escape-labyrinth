@@ -38,6 +38,17 @@ public class CharacterMovement : MonoBehaviour
         this.burstEnergy = this.maxBurstEnergy;
         this.isBursting = false;
         this.needRechargeBurst = false;
+
+        // Modify based on Tag
+        if (this.CompareTag("Escaper"))
+        {
+            this.burstMultiplier = 1.8f;
+        }
+        else if (this.CompareTag("Finder"))
+        {
+            this.speed *= 1.1f;
+            this.burstMultiplier = 1.3f;
+        }
     }
 
     // Update is called once per frame
