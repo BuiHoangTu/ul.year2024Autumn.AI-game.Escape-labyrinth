@@ -11,7 +11,7 @@ public class EscaperAgent : Agent
     public static EscaperAgent INSTANCE;
 
 
-    private CharacterMovement characterMove;
+    private CharacterMovement characterMovement;
     private MovementController heuristicsMove;
 
 
@@ -30,9 +30,9 @@ public class EscaperAgent : Agent
 
     public override void Initialize()
     {
-        this.characterMove = this.GetComponent<CharacterMovement>();
+        this.characterMovement = this.GetComponent<CharacterMovement>();
 
-        if (this.characterMove == null)
+        if (this.characterMovement == null)
         {
             Debug.LogError("CharacterMove component is not set!");
         }
@@ -42,13 +42,13 @@ public class EscaperAgent : Agent
     {
         this.heuristicsMove = new MovementController
         {
-            keyMoveType = this.characterMove.keyMoveType
+            keyMoveType = this.characterMovement.keyMoveType
         };
 
         // Stop external inputs if in training mode
         if (Academy.Instance.IsCommunicatorOn)
         {
-            this.characterMove.keyMoveType = KeyMoveType.NONE;
+            this.characterMovement.keyMoveType = KeyMoveType.NONE;
         }
     }
 
@@ -61,20 +61,21 @@ public class EscaperAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        bool isBurst = actions.DiscreteActions[0] == 1;
+        bool burst = actions.DiscreteActions[0] == 1;
         MovingType moving = (MovingType)actions.DiscreteActions[1];
         TurningType turning = (TurningType)actions.DiscreteActions[2];
 
-        Debug.Log("isBurst: " + isBurst + ", moving: " + moving + ", turning: " + turning);
+        Debug.Log("isBurst: " + burst + ", moving: " + moving + ", turning: " + turning);
 
-        this.characterMove.Move = moving;
-        this.characterMove.Turn = turning;
+        this.characterMovement.Bursting = burst;
+        this.characterMovement.Move = moving;
+        this.characterMovement.Turn = turning;
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var actions = actionsOut.DiscreteActions;
-        actions[0] = 0;  // TODO: Fix after adding Burst action
+        actions[0] = this.heuristicsMove.GetBurstInput() ? 1 : 0;
         actions[1] = (int)this.heuristicsMove.GetMovementInput();
         actions[2] = (int)this.heuristicsMove.GetRotationInput();
     }

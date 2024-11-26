@@ -133,10 +133,11 @@ public class CharacterMovement : MonoBehaviour
         set => this.turning = value;
     }
 
-    // public bool IsBursting
-    // {
-    //     get => this.isBursting;
-    // }
+    public bool Bursting
+    {
+        get => this.isBursting;
+        set => this.isBursting = value;
+    }
 
     // public float BurstEnergyPercentage
     // {
