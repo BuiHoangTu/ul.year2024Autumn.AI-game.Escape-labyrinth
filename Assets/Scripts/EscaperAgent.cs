@@ -12,6 +12,7 @@ public class EscaperAgent : Agent
 
 
     private CharacterMovement characterMove;
+    private MovementController heuristicsMove;
 
 
     private void Awake()
@@ -39,6 +40,10 @@ public class EscaperAgent : Agent
 
     public override void OnEpisodeBegin()
     {
+        this.heuristicsMove = new MovementController
+        {
+            keyMoveType = this.characterMove.keyMoveType
+        };
 
         // Stop external inputs if in training mode
         if (Academy.Instance.IsCommunicatorOn)
@@ -64,6 +69,14 @@ public class EscaperAgent : Agent
 
         this.characterMove.Move = moving;
         this.characterMove.Turn = turning;
+    }
+
+    public override void Heuristic(in ActionBuffers actionsOut)
+    {
+        var actions = actionsOut.DiscreteActions;
+        actions[0] = 0;  // TODO: Fix after adding Burst action
+        actions[1] = (int)this.heuristicsMove.GetMovementInput();
+        actions[2] = (int)this.heuristicsMove.GetRotationInput();
     }
 
     public void Win()
