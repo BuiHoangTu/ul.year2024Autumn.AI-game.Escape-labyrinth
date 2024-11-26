@@ -4,13 +4,14 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using static MovementController;
 
 public class EscaperAgent : Agent
 {
     public static EscaperAgent INSTANCE;
 
 
-    private CharacterMove characterMove;
+    private CharacterMovement characterMove;
 
 
     private void Awake()
@@ -28,7 +29,7 @@ public class EscaperAgent : Agent
 
     public override void Initialize()
     {
-        this.characterMove = this.GetComponent<CharacterMove>();
+        this.characterMove = this.GetComponent<CharacterMovement>();
 
         if (this.characterMove == null)
         {
@@ -38,11 +39,11 @@ public class EscaperAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        
+
         // Stop external inputs if in training mode
         if (Academy.Instance.IsCommunicatorOn)
         {
-            this.characterMove.keyMoveType = CharacterMove.KeyMoveType.NONE;
+            this.characterMove.keyMoveType = KeyMoveType.NONE;
         }
     }
 
@@ -56,54 +57,18 @@ public class EscaperAgent : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         bool isBurst = actions.DiscreteActions[0] == 1;
-        Moving moving = (Moving)actions.DiscreteActions[1];
-        Turning turning = (Turning)actions.DiscreteActions[2];
+        MovingType moving = (MovingType)actions.DiscreteActions[1];
+        TurningType turning = (TurningType)actions.DiscreteActions[2];
 
         Debug.Log("isBurst: " + isBurst + ", moving: " + moving + ", turning: " + turning);
 
-        switch (moving)
-        {
-            case Moving.FORWARD:
-                this.characterMove.Move(true);
-                break;
-            case Moving.BACKWARD:
-                this.characterMove.Move(false);
-                break;
-            case Moving.STOP:
-                // Do nothing
-                break;
-        }
-
-        switch (turning)
-        {
-            case Turning.LEFT:
-                this.characterMove.Rotate(true);
-                break;
-            case Turning.RIGHT:
-                this.characterMove.Rotate(false);
-                break;
-            case Turning.STOP:
-                // Do nothing
-                break;
-        }
+        this.characterMove.Move = moving;
+        this.characterMove.Turn = turning;
     }
 
     public void Win()
     {
         AddReward(1.0f);
         EndEpisode();
-    }
-
-
-    /*************** Support enums ***************/
-    public enum Moving {
-        STOP,
-        FORWARD,
-        BACKWARD
-    }
-    public enum Turning {
-        STOP,
-        LEFT,
-        RIGHT
     }
 }
