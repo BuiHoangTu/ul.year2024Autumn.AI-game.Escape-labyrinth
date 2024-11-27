@@ -1,8 +1,8 @@
 public static class Rewards
 {
     ////// Common rewards
-    public static float WIN = 100f;
-    public static float LOSE = -100f;
+    public static float WIN = 10000f;
+    public static float LOSE = -10000f;
     public static float HIT_WALL = -0.01f;
 
     ////// Finder rewards

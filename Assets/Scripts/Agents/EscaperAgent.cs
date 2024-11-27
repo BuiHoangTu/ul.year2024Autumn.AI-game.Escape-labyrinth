@@ -14,9 +14,16 @@ public class EscaperAgent : Agent
     public KeyMoveType heuristicsMoveType = KeyMoveType.NONE;
 
 
+    private Vector3 startingPosition;
     private CharacterMovement characterMovement;
     private readonly MovementInput heuristicsMove = new();
 
+
+    void Awake()
+    {
+        Debug.Log("Registering starting position" + this.transform.position);
+        this.startingPosition = this.transform.position;
+    }
 
     public override void Initialize()
     {
@@ -33,8 +40,13 @@ public class EscaperAgent : Agent
 
     public override void OnEpisodeBegin()
     {
+        // Reset position
+        Debug.Log("Resetting position" + this.startingPosition);
+        this.transform.position = this.startingPosition;
+
         // Use movement if not set
-        if (this.heuristicsMoveType == KeyMoveType.NONE) {
+        if (this.heuristicsMoveType == KeyMoveType.NONE)
+        {
             this.heuristicsMoveType = this.characterMovement.keyMoveType;
         }
 
@@ -75,7 +87,13 @@ public class EscaperAgent : Agent
 
     public void Win()
     {
-        AddReward(1.0f);
+        SetReward(Rewards.WIN);  // Win is just win
+        EndEpisode();
+    }
+
+    public void Lose()
+    {
+        AddReward(Rewards.LOSE);  // Evaluate the progress when losing
         EndEpisode();
     }
 }

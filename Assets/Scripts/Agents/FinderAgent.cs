@@ -16,4 +16,9 @@ public class FinderAgent : Agent
     {
         return;  // TODO: Implement
     }
+
+    internal void Win()
+    {
+        throw new NotImplementedException();
+    }
 }

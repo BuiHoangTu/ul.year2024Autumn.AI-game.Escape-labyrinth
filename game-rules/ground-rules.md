@@ -12,7 +12,10 @@
 1. Burst: 5s (Make sound)
     - F: 30%
     - S: 80%
-1. Vision: Cone shape vision with a limited max angular velocity (Later)
+1. Vision: Cone shape vision with a limited max angular velocity
+
+**PROGRESS**
+
 1. Sound: Both can hear 
 1. Communication: F can communicate wirelessly 
     - What it hears

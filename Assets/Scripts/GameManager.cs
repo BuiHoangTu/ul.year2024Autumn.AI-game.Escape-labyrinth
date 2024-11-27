@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.MLAgents;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -16,10 +13,16 @@ public class GameManager : MonoBehaviour
         this.finders = new List<FinderAgent>();
 
         // Find all Escapers and Finders that are chidren of this
-        this.finders.AddRange(GetComponentsInChildren<FinderAgent>());
-        this.escapers.AddRange(GetComponentsInChildren<EscaperAgent>());
-    }
+        var searchFinder = GetComponentsInChildren<FinderAgent>();
+        Debug.Log("Found " + searchFinder.Length + " FinderAgents");
 
+        var searchEscaper = GetComponentsInChildren<EscaperAgent>();
+        Debug.Log("Found " + searchEscaper.Length + " EscaperAgents");
+
+        // Add them to the list
+        this.finders.AddRange(searchFinder);
+        this.escapers.AddRange(searchEscaper);
+    }
 
     public void EscaperWin()
     {
@@ -37,5 +40,22 @@ public class GameManager : MonoBehaviour
             finder.Lose();
         }
         
+    }
+
+    public void FinderWin()
+    {
+        Debug.Log("Finder has won the game!");
+
+        // Notify EscaperAgent
+        foreach (var escaper in escapers)
+        {
+            escaper.Lose();
+        }
+
+        // Notify FinderAgent
+        foreach (var finder in finders)
+        {
+            finder.Win();
+        }
     }
 }
