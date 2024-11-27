@@ -5,36 +5,24 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using static MovementInput;
+using Unity.MLAgents.Policies;
 
 public class EscaperAgent : Agent
 {
-    public static EscaperAgent INSTANCE;
-
-
     [Header("Movement Settings")]
     [Tooltip("The type of movement to use for the agent. Infers from the CharacterMovement component if not set.")]
     public KeyMoveType heuristicsMoveType = KeyMoveType.NONE;
 
 
     private CharacterMovement characterMovement;
-    private MovementInput heuristicsMove;
+    private readonly MovementInput heuristicsMove = new();
 
-
-    private void Awake()
-    {
-        if (INSTANCE == null)
-        {
-            INSTANCE = this;
-        }
-        else
-        {
-            Debug.LogWarning("EscaperAgent instance is already set!");
-            Destroy(this);
-        }
-    }
 
     public override void Initialize()
     {
+        var behaviorParams = this.GetComponent<BehaviorParameters>();
+        behaviorParams.TeamId = (int)Team.Escaper;
+
         this.characterMovement = this.GetComponent<CharacterMovement>();
 
         if (this.characterMovement == null)
@@ -67,7 +55,7 @@ public class EscaperAgent : Agent
         MovingType moving = (MovingType)actions.DiscreteActions[1];
         TurningType turning = (TurningType)actions.DiscreteActions[2];
 
-        Debug.Log("isBurst: " + burst + ", moving: " + moving + ", turning: " + turning);
+        // Debug.Log("isBurst: " + burst + ", moving: " + moving + ", turning: " + turning);
 
         this.characterMovement.Bursting = burst;
         this.characterMovement.Move = moving;

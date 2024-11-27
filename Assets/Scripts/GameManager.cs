@@ -1,37 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    private List<EscaperAgent> escapers;
+    private List<FinderAgent> finders;
 
-    private void Awake()
+
+    public void Start()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        this.escapers = new List<EscaperAgent>();
+        this.finders = new List<FinderAgent>();
+
+        // Find all Escapers and Finders that are chidren of this
+        this.finders.AddRange(GetComponentsInChildren<FinderAgent>());
+        this.escapers.AddRange(GetComponentsInChildren<EscaperAgent>());
     }
+
 
     public void EscaperWin()
     {
         Debug.Log("Escaper has won the game!");
 
         // Notify EscaperAgent
-        if (EscaperAgent.INSTANCE != null)
+        foreach (var escaper in escapers)
         {
-            EscaperAgent.INSTANCE.Win();
+            escaper.Win();
         }
-        else
+
+        // Notify FinderAgent
+        foreach (var finder in finders)
         {
-            Debug.LogWarning("EscaperAgent instance is not set!");
+            finder.Lose();
         }
+        
     }
 }

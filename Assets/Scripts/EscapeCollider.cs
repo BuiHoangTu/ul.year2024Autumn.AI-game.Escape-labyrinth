@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class EscapeCollider : MonoBehaviour
 {
+    private GameManager gameManager;
+
+
+    void Start()
+    {
+        this.gameManager = this.GetComponentInParent<GameManager>();
+    }
+
     // check if collide with player
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -12,7 +20,7 @@ public class EscapeCollider : MonoBehaviour
         if (other.CompareTag("Escaper"))
         {
             // Escaper wins
-            GameManager.Instance.EscaperWin();
+            this.gameManager.EscaperWin();
         }
     }
 }
