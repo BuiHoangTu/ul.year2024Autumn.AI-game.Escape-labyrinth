@@ -31,7 +31,7 @@ public class CharacterMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.heading = Vector3.up;
+        this.heading = this.transform.up;
         this.rb = this.GetComponent<Rigidbody2D>();
         this.headingIndicator = this.transform.Find("HeadingIndicator").gameObject;
         this.movementController.keyMoveType = this.keyMoveType;
