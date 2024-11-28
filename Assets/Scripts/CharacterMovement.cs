@@ -144,7 +144,7 @@ public class CharacterMovement : MonoBehaviour
     }
 
 
-    // Getters and Setters
+    ///// Getters and Setters /////
     public MovingType Move
     {
         get => this.moving;
