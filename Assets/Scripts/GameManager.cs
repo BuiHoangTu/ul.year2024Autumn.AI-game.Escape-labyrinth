@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
     private List<EscaperAgent> escapers;
     private List<FinderAgent> finders;
+    private Grid map;
+    private Tilemap exit;
 
 
-    public void Start()
+    public void Awake()
     {
         this.escapers = new List<EscaperAgent>();
         this.finders = new List<FinderAgent>();
@@ -22,6 +25,14 @@ public class GameManager : MonoBehaviour
         // Add them to the list
         this.finders.AddRange(searchFinder);
         this.escapers.AddRange(searchEscaper);
+
+
+        // Find the grid
+        this.map = GetComponentInChildren<Grid>();
+        this.exit = this.map.transform.Find("Exit").GetComponent<Tilemap>();
+
+        var exitPos = this.GetExitPositions();
+        Debug.Log("Exits: " + exitPos.Length + " " + string.Join(", ", exitPos));
     }
 
     public void EscaperWin()
@@ -39,7 +50,6 @@ public class GameManager : MonoBehaviour
         {
             finder.Lose();
         }
-        
     }
 
     public void FinderWin()
@@ -57,5 +67,34 @@ public class GameManager : MonoBehaviour
         {
             finder.Win();
         }
+    }
+
+    public Vector2Int[] GetExitPositions()
+    {
+        List<Vector2Int> exitPositions = new();
+
+        BoundsInt bounds = this.exit.cellBounds;
+
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                Vector3Int cellPos = new(x, y, 0);
+                if (this.exit.HasTile(cellPos))
+                {
+                    Vector3Int posOnMap = this.map.WorldToCell(this.exit.CellToWorld(cellPos));
+                    exitPositions.Add(new Vector2Int(posOnMap.x, posOnMap.y));
+                }
+            }
+        }
+
+        return exitPositions.ToArray();
+    }
+
+
+    ///// Getters and Setters /////
+    public Grid Map
+    {
+        get { return this.map; }
     }
 }

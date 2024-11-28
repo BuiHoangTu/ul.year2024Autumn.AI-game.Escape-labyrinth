@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Escaper
   - Finder
+  - Exit
   layers:
   - Default
   - TransparentFX

@@ -17,12 +17,14 @@ public class EscaperAgent : Agent
     private Vector3 startingPosition;
     private CharacterMovement characterMovement;
     private readonly MovementInput heuristicsMove = new();
+    private GameManager gameManager;
 
 
     void Awake()
     {
         Debug.Log("Registering starting position" + this.transform.position);
         this.startingPosition = this.transform.position;
+        this.gameManager = this.GetComponentInParent<GameManager>();
     }
 
     public override void Initialize()
@@ -56,10 +58,23 @@ public class EscaperAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Add observation for the position of the agent
-        sensor.AddObservation((Vector2)this.transform.position);
-    }
+        // self position
+        var posOnMap = GetTilePosition();
+        sensor.AddObservation(posOnMap);
 
+        // self turning angle
+        sensor.AddObservation(this.transform.rotation.eulerAngles.z);
+
+        // exits position
+        var exits = gameManager.GetExitPositions();
+        if (exits.Length != 3)
+        {
+            Debug.LogError("There should be 3 exits on the map!");
+        }
+        sensor.AddObservation(exits[0]);
+        sensor.AddObservation(exits[1]);
+        sensor.AddObservation(exits[2]);
+    }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
@@ -95,5 +110,12 @@ public class EscaperAgent : Agent
     {
         AddReward(Rewards.LOSE);  // Evaluate the progress when losing
         EndEpisode();
+    }
+
+    // Find position on tile map
+    public Vector2Int GetTilePosition()
+    {
+        var position = gameManager.Map.WorldToCell(this.transform.position);
+        return new Vector2Int(position.x, position.y);
     }
 }
