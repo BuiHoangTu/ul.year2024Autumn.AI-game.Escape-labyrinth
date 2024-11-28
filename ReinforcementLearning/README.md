@@ -17,8 +17,6 @@ micromamba env export -n unity2022-ai > env.yml && echo -e "- pip:\n$(micromamba
     micromamba env create -f env.yml
     ```
 
-    **Note**: Remove postfix in version of `torch` if micromamba got errors installing it.
-
 1. Activate
     ```bash
     micromamba activate unity2022-ai
