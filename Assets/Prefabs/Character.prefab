@@ -45,11 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SensorName: RayPerceptionSensor
-  m_DetectableTags: []
-  m_RaysPerDirection: 6
+  m_DetectableTags:
+  - Escaper
+  - Finder
+  - Exit
+  m_RaysPerDirection: 10
   m_MaxRayDegrees: 60
   m_SphereCastRadius: 0
-  m_RayLength: 3
+  m_RayLength: 10
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 4294967291
@@ -495,7 +498,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 1000000
+  MaxStep: 1000
   heuristicsMoveType: 3
 --- !u!114 &1298411709902244806
 MonoBehaviour:

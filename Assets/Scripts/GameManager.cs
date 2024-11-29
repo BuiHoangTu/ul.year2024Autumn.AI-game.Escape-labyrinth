@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour
         {
             finder.Lose();
         }
+
+        ResetGameState();
     }
 
     public void FinderWin()
@@ -67,6 +69,8 @@ public class GameManager : MonoBehaviour
         {
             finder.Win();
         }
+
+        ResetGameState();
     }
 
     public Vector2Int[] GetExitPositions()
@@ -91,6 +95,20 @@ public class GameManager : MonoBehaviour
         return exitPositions.ToArray();
     }
 
+
+    private void ResetGameState()
+    {
+        // Reset all agents
+        foreach (var escaper in escapers)
+        {
+            escaper.ResetGameState();
+        }
+
+        foreach (var finder in finders)
+        {
+            finder.ResetGameState();
+        }
+    }
 
     ///// Getters and Setters /////
     public Grid Map

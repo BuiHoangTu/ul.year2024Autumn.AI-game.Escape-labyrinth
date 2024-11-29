@@ -42,10 +42,6 @@ public class EscaperAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        // Reset position
-        Debug.Log("Resetting position" + this.startingPosition);
-        this.transform.position = this.startingPosition;
-
         // Use movement if not set
         if (this.heuristicsMoveType == KeyMoveType.NONE)
         {
@@ -117,5 +113,11 @@ public class EscaperAgent : Agent
     {
         var position = gameManager.Map.WorldToCell(this.transform.position);
         return new Vector2Int(position.x, position.y);
+    }
+
+    public void ResetGameState()
+    {
+        this.transform.position = this.startingPosition;
+        EndEpisode();
     }
 }

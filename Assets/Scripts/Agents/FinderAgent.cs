@@ -21,4 +21,9 @@ public class FinderAgent : Agent
     {
         throw new NotImplementedException();
     }
+
+    internal void ResetGameState()
+    {
+        throw new NotImplementedException();
+    }
 }
