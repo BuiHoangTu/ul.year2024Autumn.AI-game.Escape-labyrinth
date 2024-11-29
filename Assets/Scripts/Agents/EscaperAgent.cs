@@ -18,6 +18,8 @@ public class EscaperAgent : Agent
     private CharacterMovement characterMovement;
     private readonly MovementInput heuristicsMove = new();
     private GameManager gameManager;
+    private RayPerceptionSensorComponent2D visionSensor;
+    private float lastDistanceToExit;
 
 
     void Awake()
@@ -25,6 +27,41 @@ public class EscaperAgent : Agent
         Debug.Log("Registering starting position" + this.transform.position);
         this.startingPosition = this.transform.position;
         this.gameManager = this.GetComponentInParent<GameManager>();
+
+    }
+
+    void Start()
+    {
+        this.visionSensor = this.GetComponentInChildren<RayPerceptionSensorComponent2D>();
+        if (this.visionSensor == null)
+        {
+            Debug.LogError("RayPerceptionSensorComponent2D not found!");
+        }
+        this.lastDistanceToExit = 1;
+    }
+
+    void FixedUpdate()
+    {
+        float distanceToExit = 1;
+        // Iterate over all ray outputs (mid -> right -> left -> right -> left -> ...)
+        var rayOutputs = RayPerceptionSensor.Perceive(this.visionSensor.GetRayPerceptionInput()).RayOutputs;
+        foreach (var rayOutput in rayOutputs)
+        {
+            GameObject hitObject = rayOutput.HitGameObject;
+            if (hitObject == null) continue;
+
+            if (hitObject.CompareTag("Exit"))
+            {
+                if (rayOutput.HitFraction < distanceToExit)
+                    distanceToExit = rayOutput.HitFraction;
+            }
+        }
+
+        float distanceDelta = this.lastDistanceToExit - distanceToExit;
+        this.lastDistanceToExit = distanceToExit;
+
+        float reward = distanceDelta * Rewards.TO_EXIT;
+        this.AddReward(reward);
     }
 
     public override void Initialize()

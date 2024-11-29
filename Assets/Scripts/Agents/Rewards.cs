@@ -11,6 +11,6 @@ public static class Rewards
 
     ////// Escaper rewards
     public static float FOUND_EXIT = 0.1f;
-    public static float TO_EXIT = 0.01f;
+    public static float TO_EXIT = 100f;
 
 }
