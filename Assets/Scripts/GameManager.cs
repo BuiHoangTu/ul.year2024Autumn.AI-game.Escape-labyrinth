@@ -73,6 +73,9 @@ public class GameManager : MonoBehaviour
         ResetGameState();
     }
 
+    /// <summary>
+    /// Get the positions of the exit tiles on the map
+    /// </summary>
     public Vector2Int[] GetExitPositions()
     {
         List<Vector2Int> exitPositions = new();
@@ -86,8 +89,7 @@ public class GameManager : MonoBehaviour
                 Vector3Int cellPos = new(x, y, 0);
                 if (this.exit.HasTile(cellPos))
                 {
-                    Vector3Int posOnMap = this.map.WorldToCell(this.exit.CellToWorld(cellPos));
-                    exitPositions.Add(new Vector2Int(posOnMap.x, posOnMap.y));
+                    exitPositions.Add(this.GetPositionOnMap(this.exit.CellToWorld(cellPos)));
                 }
             }
         }
@@ -95,6 +97,28 @@ public class GameManager : MonoBehaviour
         return exitPositions.ToArray();
     }
 
+    /// <summary>
+    /// Get the position of the exit tile on the map. Shifted to [0, n] range
+    /// </summary>
+    public Vector2Int GetPositionOnMap(Vector2 posInWorld)
+    {
+        var pos = this.map.WorldToCell(posInWorld);
+
+        // normalize the position
+        var (min, max) = GetMapLimits();
+
+        var x = pos.x - min.x;
+        var y = pos.y - min.y;
+
+        return new Vector2Int(x, y);
+    }
+
+
+    private (Vector2Int, Vector2Int) GetMapLimits()
+    {
+        var bounds = this.map.transform.Find("Obstacles").GetComponent<Tilemap>().cellBounds;
+        return (new Vector2Int(bounds.xMin, bounds.yMin), new Vector2Int(bounds.xMax, bounds.yMax));
+    }
 
     private void ResetGameState()
     {

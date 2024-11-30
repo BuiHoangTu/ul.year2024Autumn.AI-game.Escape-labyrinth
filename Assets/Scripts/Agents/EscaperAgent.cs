@@ -19,7 +19,8 @@ public class EscaperAgent : Agent
     private readonly MovementInput heuristicsMove = new();
     private GameManager gameManager;
     private RayPerceptionSensorComponent2D visionSensor;
-    private float lastDistanceToExit;
+    private float lastDistanceExitScore;
+    private MapMemory mapMemory;
 
 
     void Awake()
@@ -37,31 +38,8 @@ public class EscaperAgent : Agent
         {
             Debug.LogError("RayPerceptionSensorComponent2D not found!");
         }
-        this.lastDistanceToExit = 1;
-    }
 
-    void FixedUpdate()
-    {
-        float distanceToExit = 1;
-        // Iterate over all ray outputs (mid -> right -> left -> right -> left -> ...)
-        var rayOutputs = RayPerceptionSensor.Perceive(this.visionSensor.GetRayPerceptionInput()).RayOutputs;
-        foreach (var rayOutput in rayOutputs)
-        {
-            GameObject hitObject = rayOutput.HitGameObject;
-            if (hitObject == null) continue;
-
-            if (hitObject.CompareTag("Exit"))
-            {
-                if (rayOutput.HitFraction < distanceToExit)
-                    distanceToExit = rayOutput.HitFraction;
-            }
-        }
-
-        float distanceDelta = this.lastDistanceToExit - distanceToExit;
-        this.lastDistanceToExit = distanceToExit;
-
-        float reward = distanceDelta * Rewards.TO_EXIT;
-        this.AddReward(reward);
+        this.mapMemory = this.GetComponent<MapMemory>();
     }
 
     public override void Initialize()
@@ -79,6 +57,8 @@ public class EscaperAgent : Agent
 
     public override void OnEpisodeBegin()
     {
+        Debug.Log("OnEpisodeBegin");
+
         // Use movement if not set
         if (this.heuristicsMoveType == KeyMoveType.NONE)
         {
@@ -87,6 +67,51 @@ public class EscaperAgent : Agent
 
         // Stop external inputs if in training mode
         this.characterMovement.keyMoveType = KeyMoveType.NONE;
+
+        this.lastDistanceExitScore = CalculateDistanceExitScore();
+    }
+
+    void FixedUpdate()
+    {
+        ////// Reward for seeing the exit //////
+        // Iterate over all ray outputs (mid -> right -> left -> right -> left -> ...)
+        var rayOutputs = RayPerceptionSensor.Perceive(this.visionSensor.GetRayPerceptionInput()).RayOutputs;
+        foreach (var rayOutput in rayOutputs)
+        {
+            GameObject hitObject = rayOutput.HitGameObject;
+            if (hitObject == null) continue;
+
+            if (hitObject.CompareTag("Exit"))
+            {
+                this.AddReward(Rewards.SEEING_EXIT * Time.fixedDeltaTime);
+                break;
+            }
+        }
+
+
+        ///// Map Memory /////
+        foreach (var rayOutput in rayOutputs)
+        {
+            GameObject hitObject = rayOutput.HitGameObject;
+            if (hitObject == null) continue;
+
+            if (hitObject.CompareTag("Obstacle"))
+            {
+                this.mapMemory.AddObstacle(hitObject);
+            }
+            else if (hitObject.CompareTag("Finder"))
+            {
+                this.mapMemory.AddEnemy(hitObject);
+            }
+        }
+        this.mapMemory.AddStaticObject(this.gameObject, MapMemory.MapItem.VISITED);
+
+
+        ////// Reward for reaching one of the exit //////
+        var distanceExitScore = CalculateDistanceExitScore();
+        var distanceExitScoreDelta = this.lastDistanceExitScore - distanceExitScore;
+        this.lastDistanceExitScore = distanceExitScore;
+        this.AddReward(distanceExitScoreDelta * Rewards.DISTANCE_TO_EXIT * Time.fixedDeltaTime);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -96,7 +121,10 @@ public class EscaperAgent : Agent
         sensor.AddObservation(posOnMap);
 
         // self turning angle
-        sensor.AddObservation(this.transform.rotation.eulerAngles.z);
+        sensor.AddObservation(this.transform.rotation.eulerAngles.z / 360);
+
+        // self burst energy
+        sensor.AddObservation(this.characterMovement.BurstEnergyPercentage);
 
         // exits position
         var exits = gameManager.GetExitPositions();
@@ -145,16 +173,29 @@ public class EscaperAgent : Agent
         EndEpisode();
     }
 
-    // Find position on tile map
-    public Vector2Int GetTilePosition()
-    {
-        var position = gameManager.Map.WorldToCell(this.transform.position);
-        return new Vector2Int(position.x, position.y);
-    }
-
     public void ResetGameState()
     {
         this.transform.position = this.startingPosition;
         EndEpisode();
+    }
+
+
+    /// <summary>
+    /// Get the current tile position on the map
+    /// </summary>
+    private Vector2Int GetTilePosition()
+    {
+        return gameManager.GetPositionOnMap(this.transform.position);
+    }
+
+    private float CalculateDistanceExitScore()
+    {
+        var exits = gameManager.GetExitPositions();
+        float mulDistance = 1;
+        for (int i = 0; i < exits.Length; i++)
+        {
+            mulDistance *= Vector2.Distance(this.GetTilePosition(), exits[i]);
+        }
+        return mulDistance;
     }
 }

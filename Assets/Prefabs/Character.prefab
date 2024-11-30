@@ -49,6 +49,7 @@ MonoBehaviour:
   - Escaper
   - Finder
   - Exit
+  - Obstacle
   m_RaysPerDirection: 10
   m_MaxRayDegrees: 60
   m_SphereCastRadius: 0
@@ -498,7 +499,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 1000
+  MaxStep: 30000
   heuristicsMoveType: 3
 --- !u!114 &1298411709902244806
 MonoBehaviour:

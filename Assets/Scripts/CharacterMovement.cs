@@ -173,8 +173,8 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    // public float BurstEnergyPercentage
-    // {
-    //     get => this.burstEnergy / this.maxBurstEnergy;
-    // }
+    public float BurstEnergyPercentage
+    {
+        get => this.burstEnergy / this.maxBurstEnergy;
+    }
 }
