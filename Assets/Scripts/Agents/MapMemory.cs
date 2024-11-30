@@ -15,16 +15,16 @@ public class MapMemory : MonoBehaviour, ISensor
     private Dictionary<int, Vector2Int> dynamicObjects = new();
 
 
-    public void Awake()
+    public void Start()
     {
         this.Reset();
     }
 
-    public void AddObstacle(GameObject obj)
+    public bool AddObstacle(GameObject obj)
     {
-        this.AddStaticObject(obj, MapItem.OSTACLE);
+        return this.AddStaticObject(obj, MapItem.OSTACLE);
     }
-    public void AddStaticObject(GameObject obj, MapItem objType)
+    public bool AddStaticObject(GameObject obj, MapItem objType)
     {
         bool adding = this.staticObjects.Add(obj);
         if (adding)
@@ -32,6 +32,7 @@ public class MapMemory : MonoBehaviour, ISensor
             Vector2Int cellPos = this.gameManager.GetPositionOnMap(obj.transform.position);
             this.mapMemory[cellPos.x, cellPos.y] = this.AddMapItem(this.mapMemory[cellPos.x, cellPos.y], objType);
         }
+        return adding;
     }
 
     public void AddEnemy(GameObject obj)
