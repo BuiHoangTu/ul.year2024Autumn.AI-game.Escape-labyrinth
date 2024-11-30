@@ -9,7 +9,7 @@ public class CharacterMovement : MonoBehaviour
 
 
     public float speed = 5.0f;
-    public float angularSpeed = 200.0f;
+    public float angularSpeed = 50.0f;
     public float maxBurstEnergy = MAX_BURST_ENERGY;
     public float burstMultiplier = 1.5f;
     public float burstConsumptionRate = 20.0f;

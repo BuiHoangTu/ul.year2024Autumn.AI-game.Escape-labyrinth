@@ -309,7 +309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  angularSpeed: 200
+  angularSpeed: 50
   maxBurstEnergy: 100
   burstMultiplier: 2
   burstConsumptionRate: 20
