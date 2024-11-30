@@ -1,16 +1,16 @@
 public static class Rewards
 {
     ////// Common rewards
-    public static float WIN = 10000f;
-    public static float LOSE = -10000f;
-    public static float HIT_WALL = -0.01f;
+    public const float WIN = 1000f;
+    public const float LOSE = -1000f;
+    public const float HIT_WALL = -0.01f;
 
     ////// Finder rewards
-    public static float FOUND_ESCAPER = 0.1f;
-    public static float CHASING_ESCAPER = 0.01f;
+    public const float FOUND_ESCAPER = 0.1f;
+    public const float CHASING_ESCAPER = 0.01f;
 
     ////// Escaper rewards
-    public static float FOUND_EXIT = 0.1f;
-    public static float TO_EXIT = 100f;
+    public const float SEEING_EXIT = 1f;
+    public const float DISTANCE_TO_EXIT = 1f;
 
 }
