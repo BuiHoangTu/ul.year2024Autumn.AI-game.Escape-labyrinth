@@ -198,6 +198,7 @@ public abstract class BaseAgent : Agent
     public void ResetGameState()
     {
         this.transform.position = this.startingPosition;
+        this.mapMemory.Reset();
         EndEpisode();
     }
 

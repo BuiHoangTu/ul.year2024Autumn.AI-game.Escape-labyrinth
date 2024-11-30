@@ -48,16 +48,18 @@ public class EscaperAgent : BaseAgent
 
     protected override float CalculateDistanceTargetScore()
     {
-        var exits = this.gameManager.GetExitPositions();
-        float minDistance = Vector2.Distance(this.GetTilePosition(), exits[0]);
-        for (int i = 1; i < exits.Length; i++)
-        {
-            float distance = Vector2.Distance(this.GetTilePosition(), exits[i]);
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-            }
-        }
-        return minDistance;
+        // var exits = this.gameManager.GetExitPositions();
+        // float minDistance = Vector2.Distance(this.GetTilePosition(), exits[0]);
+        // for (int i = 1; i < exits.Length; i++)
+        // {
+        //     float distance = Vector2.Distance(this.GetTilePosition(), exits[i]);
+        //     if (distance < minDistance)
+        //     {
+        //         minDistance = distance;
+        //     }
+        // }
+        // return minDistance;
+
+        return 0;
     }
 }
