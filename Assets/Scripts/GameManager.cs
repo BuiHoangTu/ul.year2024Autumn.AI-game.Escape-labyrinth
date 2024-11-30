@@ -4,6 +4,10 @@ using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
+    public float timeMatchMax = 600.0f;
+
+
+    private float timeMatch;
     private List<EscaperAgent> escapers;
     private List<FinderAgent> finders;
     private Grid map;
@@ -12,6 +16,8 @@ public class GameManager : MonoBehaviour
 
     public void Awake()
     {
+        this.timeMatch = 0;
+
         this.escapers = new List<EscaperAgent>();
         this.finders = new List<FinderAgent>();
 
@@ -33,6 +39,17 @@ public class GameManager : MonoBehaviour
 
         var exitPos = this.GetExitPositions();
         Debug.Log("Exits: " + exitPos.Length + " " + string.Join(", ", exitPos));
+    }
+
+    public void FixedUpdate()
+    {
+        this.timeMatch += Time.fixedDeltaTime;
+
+        if (this.timeMatch >= this.timeMatchMax)
+        {
+            Debug.Log("Time is up!");
+            this.Tie();
+        }
     }
 
     public void EscaperWin()
@@ -68,6 +85,25 @@ public class GameManager : MonoBehaviour
         foreach (var finder in finders)
         {
             finder.Win();
+        }
+
+        ResetGameState();
+    }
+
+    public void Tie()
+    {
+        Debug.Log("It's a tie!");
+
+        // Notify EscaperAgent
+        foreach (var escaper in escapers)
+        {
+            escaper.Lose();
+        }
+
+        // Notify FinderAgent
+        foreach (var finder in finders)
+        {
+            finder.Lose();
         }
 
         ResetGameState();
@@ -122,6 +158,8 @@ public class GameManager : MonoBehaviour
 
     private void ResetGameState()
     {
+        this.timeMatch = 0;
+
         // Reset all agents
         foreach (var escaper in escapers)
         {

@@ -191,11 +191,15 @@ public class EscaperAgent : Agent
     private float CalculateDistanceExitScore()
     {
         var exits = gameManager.GetExitPositions();
-        float mulDistance = 1;
-        for (int i = 0; i < exits.Length; i++)
+        float minDistance = Vector2.Distance(this.GetTilePosition(), exits[0]);
+        for (int i = 1; i < exits.Length; i++)
         {
-            mulDistance *= Vector2.Distance(this.GetTilePosition(), exits[i]);
+            float distance = Vector2.Distance(this.GetTilePosition(), exits[i]);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+            }
         }
-        return mulDistance;
+        return minDistance;
     }
 }
