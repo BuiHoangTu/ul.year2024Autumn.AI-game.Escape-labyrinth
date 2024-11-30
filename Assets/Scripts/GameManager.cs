@@ -173,8 +173,13 @@ public class GameManager : MonoBehaviour
     }
 
     ///// Getters and Setters /////
-    public Grid Map
+    // public Grid Map
+    // {
+    //     get { return this.map; }
+    // }
+
+    public float TimeMatch
     {
-        get { return this.map; }
+        get { return this.timeMatch; }
     }
 }

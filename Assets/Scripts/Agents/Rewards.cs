@@ -3,6 +3,7 @@ public static class Rewards
     ////// Common rewards
     public const float WIN = 100f;
     public const float LOSE = -100f;
+    public const float PROLONG_MATCH = 10f;
     public const float HIT_WALL = -0.01f;
 
     ////// Finder rewards

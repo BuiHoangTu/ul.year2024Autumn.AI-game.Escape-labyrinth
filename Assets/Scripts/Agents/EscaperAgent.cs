@@ -164,12 +164,16 @@ public class EscaperAgent : Agent
     public void Win()
     {
         SetReward(Rewards.WIN);  // Win is just win
+        // reduce the reward by the time it took to win
+        AddReward(- Rewards.PROLONG_MATCH * gameManager.TimeMatch / gameManager.timeMatchMax);  
         EndEpisode();
     }
 
     public void Lose()
     {
         AddReward(Rewards.LOSE);  // Evaluate the progress when losing
+        // add reward for surviving
+        AddReward(Rewards.PROLONG_MATCH * gameManager.TimeMatch / gameManager.timeMatchMax);
         EndEpisode();
     }
 
