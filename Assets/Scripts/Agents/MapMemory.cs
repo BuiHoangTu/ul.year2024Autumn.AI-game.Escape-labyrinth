@@ -93,21 +93,29 @@ public class MapMemory : MonoBehaviour, ISensor
         int totalCells = this.mapSize.x * this.mapSize.y;
         byte[] compressedObservation = new byte[totalCells];
 
+        // flatten 2D array into 1D
         for (int x = 0; x < this.mapSize.x; x++)
         {
             for (int y = 0; y < this.mapSize.y; y++)
             {
-                // Cast MapItem to byte for compression (0 to 4)
-                compressedObservation[x * this.mapSize.y + y] = (byte)this.mapMemory[x, y];
+                // Use a more explicit flattening method
+                int flattenedIndex = y * this.mapSize.x + x;
+                compressedObservation[flattenedIndex] = (byte)this.mapMemory[x, y];
             }
         }
 
         return compressedObservation;
     }
 
-    public void Update()
+    public CompressionSpec GetCompressionSpec()
     {
-        // Dont need to do anything
+        // Specify the compression type if needed
+        return CompressionSpec.Default();
+    }
+
+    public string GetName()
+    {
+        return this.sensorName;
     }
 
     public void Reset()
@@ -128,14 +136,9 @@ public class MapMemory : MonoBehaviour, ISensor
         this.dynamicObjects.Clear();
     }
 
-    public CompressionSpec GetCompressionSpec()
+    public void Update()
     {
-        return new CompressionSpec();
-    }
-
-    public string GetName()
-    {
-        return this.sensorName;
+        return;
     }
 
 
