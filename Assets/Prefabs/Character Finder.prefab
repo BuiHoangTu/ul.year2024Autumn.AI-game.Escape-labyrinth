@@ -84,6 +84,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character Finder
       objectReference: {fileID: 0}
+    - target: {fileID: 6360169023216720149, guid: 8af1d07948740f3769d4a3b08372e381, type: 3}
+      propertyPath: m_TagString
+      value: Finder
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5842001126259477319, guid: 8af1d07948740f3769d4a3b08372e381, type: 3}
     m_RemovedGameObjects: []
