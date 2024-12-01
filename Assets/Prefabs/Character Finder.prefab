@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2084961794805432307, guid: 8af1d07948740f3769d4a3b08372e381, type: 3}
       propertyPath: m_BehaviorName
-      value: FInding
+      value: Finding
       objectReference: {fileID: 0}
     - target: {fileID: 2084961794805432307, guid: 8af1d07948740f3769d4a3b08372e381, type: 3}
       propertyPath: m_BrainParameters.VectorObservationSize
