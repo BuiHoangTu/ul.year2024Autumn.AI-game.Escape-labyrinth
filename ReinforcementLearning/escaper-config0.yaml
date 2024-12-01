@@ -15,6 +15,9 @@ behaviors:
       normalize: false
       hidden_units: 128
       num_layers: 2
+      memory: 
+        memory_size: 128
+        sequence_length: 32
     reward_signals:
       extrinsic:
         gamma: 0.99
@@ -22,6 +25,8 @@ behaviors:
       gail:
         strength: 0.5
         demo_path: demos/EscaperLv0.demo
+      curiosity:
+        strength: 0.1
     behavioral_cloning:
       strength: 0.5
       demo_path: demos/EscaperLv0.demo
