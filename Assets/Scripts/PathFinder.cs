@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ public class PathFinder : MonoBehaviour
     private Vector2Int gridSize;
     private Grid fullMap;
     private Tilemap obstacleTilemap;
+    private HashSet<Vector2Int> obstaclesPos;
 
 
     private void Awake()
@@ -37,29 +39,40 @@ public class PathFinder : MonoBehaviour
         {
             Debug.LogError("Obstacle Tilemap not found!");
         }
+
+        // Get all obstacles positions
+        this.obstaclesPos = new HashSet<Vector2Int>();
+        BoundsInt bounds = this.obstacleTilemap.cellBounds;
+
+        foreach (var pos in bounds.allPositionsWithin)
+        {
+            if (this.obstacleTilemap.HasTile(pos))
+            {
+                this.obstaclesPos.Add(new Vector2Int(pos.x, pos.y));
+            }
+        }
     }
 
 
     public List<Vector2Int> FindPath(Vector2Int start, Vector2Int goal)
     {
         // Open and closed lists
-        List<Node> openList = new List<Node>();
+        var openList = new PriorityQueue<Node>();
         HashSet<Node> closedList = new HashSet<Node>();
 
         Node startNode = new Node(start);
         Node goalNode = new Node(goal);
 
-        openList.Add(startNode);
+        openList.Enqueue(startNode, startNode.FCost);
 
-        while (openList.Count > 0)
+        while (openList.Any())
         {
-            Node currentNode = openList.OrderBy(n => n.FCost).First();
+            Node currentNode = openList.Dequeue();
 
             // Goal reached
             if (currentNode.Position == goal)
                 return RetracePath(startNode, currentNode);
 
-            openList.Remove(currentNode);
             closedList.Add(currentNode);
 
             foreach (Vector2Int neighbor in GetNeighbors(currentNode.Position))
@@ -69,13 +82,18 @@ public class PathFinder : MonoBehaviour
 
                 int newMovementCost = currentNode.GCost + GetDistance(currentNode.Position, neighbor);
 
-                Node neighborNode = openList.FirstOrDefault(n => n.Position == neighbor);
+                Node neighborNode = null;
+                if (openList.Contains(new Node(neighbor)))
+                {
+                    neighborNode = openList.Find(n => n.Position == neighbor);
+                }
+
                 if (neighborNode == null || newMovementCost < neighborNode.GCost)
                 {
                     if (neighborNode == null)
                     {
                         neighborNode = new Node(neighbor);
-                        openList.Add(neighborNode);
+                        openList.Enqueue(neighborNode, neighborNode.FCost);
                     }
                     neighborNode.GCost = newMovementCost;
                     neighborNode.HCost = GetDistance(neighbor, goal);
@@ -117,7 +135,7 @@ public class PathFinder : MonoBehaviour
 
     private bool IsWalkable(Vector2Int position)
     {
-        return this.obstacleTilemap.GetTile(new Vector3Int(position.x, position.y, 0)) == null;
+        return !this.obstaclesPos.Contains(position);
     }
 
     private int GetDistance(Vector2Int a, Vector2Int b)
@@ -137,5 +155,36 @@ public class PathFinder : MonoBehaviour
         {
             Position = position;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Node node &&
+                   Position.Equals(node.Position);
+        }
+
+        public override int GetHashCode()
+        {
+            return Position.GetHashCode();
+        }
     }
+
+    private class PriorityQueue<T>
+    {
+        private List<(T Item, int Priority)> elements = new List<(T, int)>();
+
+        public void Enqueue(T item, int priority) => elements.Add((item, priority));
+        public T Dequeue()
+        {
+            var bestIndex = elements.Select((e, i) => (e, i)).OrderBy(e => e.e.Priority).First().i;
+            var bestItem = elements[bestIndex].Item;
+            elements.RemoveAt(bestIndex);
+            return bestItem;
+        }
+        public bool Any() => elements.Count > 0;
+
+        public bool Contains(T item) => elements.Any(e => e.Item.Equals(item));
+
+        public T Find(Predicate<T> match) => elements.Find(e => match(e.Item)).Item;
+    }
+
 }
