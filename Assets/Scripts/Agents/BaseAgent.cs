@@ -62,8 +62,6 @@ public abstract class BaseAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        Debug.Log("OnEpisodeBegin");
-
         // Use movement if not set
         if (this.heuristicsMoveType == KeyMoveType.NONE)
         {
