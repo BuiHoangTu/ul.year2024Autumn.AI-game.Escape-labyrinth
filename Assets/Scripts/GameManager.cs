@@ -134,19 +134,13 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Get the position of the exit tile on the map. Shifted to [0, n] range
+    /// Get the position of the exit tile on the map
     /// </summary>
     public Vector2Int GetPositionOnMap(Vector2 posInWorld)
     {
         var pos = this.map.WorldToCell(posInWorld);
 
-        // normalize the position
-        var (min, max) = GetMapLimits();
-
-        var x = pos.x - min.x;
-        var y = pos.y - min.y;
-
-        return new Vector2Int(x, y);
+        return new Vector2Int(pos.x, pos.y);
     }
 
 

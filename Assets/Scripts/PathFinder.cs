@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
 
 public class PathFinder : MonoBehaviour
@@ -51,6 +52,19 @@ public class PathFinder : MonoBehaviour
                 this.obstaclesPos.Add(new Vector2Int(pos.x, pos.y));
             }
         }
+        // print obstacles positions
+        // foreach (var pos in this.obstaclesPos)
+        // {
+        //     Debug.Log("Obstacle at " + pos);
+        // }
+        
+
+        // draw path
+        var self = this.gameManager.GetPositionOnMap(this.transform.position);
+        var exit = this.gameManager.GetExitPositions()[0];
+        // Debug.Log("Finding path from " + self + " to " + exit);
+        var path = FindPath(self, exit);  
+        this.DebugDrawPath(path);
     }
 
 
@@ -70,11 +84,8 @@ public class PathFinder : MonoBehaviour
             Node currentNode = openList.Dequeue();
 
             // Goal reached
-            if (currentNode.Position == goal){
-                var path = RetracePath(startNode, currentNode);
-                DebugDrawPath(path);
-                return path;
-            }
+            if (currentNode.Position == goal)
+                return RetracePath(startNode, currentNode);
 
             closedList.Add(currentNode);
 
@@ -124,9 +135,13 @@ public class PathFinder : MonoBehaviour
 
     private void DebugDrawPath(List<Vector2Int> path)
     {
+        Assert.IsNotNull(path, "Path is null!");
         foreach (var position in path)
         {
-            Debug.DrawLine(new Vector3(position.x, position.y, 0), new Vector3(position.x + 1, position.y + 1, 0), Color.green, 2f);
+            Debug.DrawLine(
+                new Vector3(position.x, position.y, 0), 
+                new Vector3(position.x + 1, position.y + 1, 0), 
+                Color.green, 10f);
         }
     }
 
@@ -141,8 +156,18 @@ public class PathFinder : MonoBehaviour
             new(position.x, position.y - 1)
         };
 
-        return neighbors.Where(n => n.x >= 0 && n.x < this.gridSize.x && n.y >= 0 && n.y < this.gridSize.y);
+        var (limitMin, limitMax) = this.gameManager.GetMapLimits();
 
+        var res = neighbors.Where(
+            n => 
+                n.x >= limitMin.x && n.x < limitMax.x && 
+                n.y >= limitMin.y && n.y < limitMax.y
+        );
+        // foreach (var neighbor in res)
+        // {
+        //     Debug.Log("\tFound Neighbor: " + neighbor);
+        // }
+        return res;
     }
 
     private bool IsWalkable(Vector2Int position)
