@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-public class MapMemory : MonoBehaviour, ISensor
+public class MapMemorySensor : MonoBehaviour, ISensor
 {
     public string sensorName = "MapMemory";
     public Vector2Int mapSize = new(100, 100);

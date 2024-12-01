@@ -23,7 +23,7 @@ public abstract class BaseAgent : Agent
     protected abstract float DistanceToTargetReward { get; }
     protected abstract string SmartEnemyTag { get; }
     private float lastDistanceTargetScore;
-    private MapMemory mapMemory;
+    private MapMemorySensor mapMemory;
 
 
     protected virtual void Awake()
@@ -41,7 +41,7 @@ public abstract class BaseAgent : Agent
             Debug.LogError("RayPerceptionSensorComponent2D not found!");
         }
 
-        this.mapMemory = this.GetComponent<MapMemory>();
+        this.mapMemory = this.GetComponent<MapMemorySensor>();
         if (this.mapMemory == null)
         {
             Debug.LogError("MapMemory not found!");
@@ -113,7 +113,7 @@ public abstract class BaseAgent : Agent
                 this.mapMemory.AddEnemy(hitObject);
             }
         }
-        this.mapMemory.AddStaticObject(this.gameObject, MapMemory.MapItem.VISITED);
+        this.mapMemory.AddStaticObject(this.gameObject, MapMemorySensor.MapItem.VISITED);
 
 
         ////// Reward for closing the target //////
