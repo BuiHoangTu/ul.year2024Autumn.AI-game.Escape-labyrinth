@@ -70,8 +70,11 @@ public class PathFinder : MonoBehaviour
             Node currentNode = openList.Dequeue();
 
             // Goal reached
-            if (currentNode.Position == goal)
-                return RetracePath(startNode, currentNode);
+            if (currentNode.Position == goal){
+                var path = RetracePath(startNode, currentNode);
+                DebugDrawPath(path);
+                return path;
+            }
 
             closedList.Add(currentNode);
 
@@ -118,6 +121,15 @@ public class PathFinder : MonoBehaviour
         path.Reverse();
         return path;
     }
+
+    private void DebugDrawPath(List<Vector2Int> path)
+    {
+        foreach (var position in path)
+        {
+            Debug.DrawLine(new Vector3(position.x, position.y, 0), new Vector3(position.x + 1, position.y + 1, 0), Color.green, 2f);
+        }
+    }
+
 
     private IEnumerable<Vector2Int> GetNeighbors(Vector2Int position)
     {
