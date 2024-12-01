@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private (Vector2Int, Vector2Int) GetMapLimits()
+    public (Vector2Int, Vector2Int) GetMapLimits()
     {
         var bounds = this.map.transform.Find("Obstacles").GetComponent<Tilemap>().cellBounds;
         return (new Vector2Int(bounds.xMin, bounds.yMin), new Vector2Int(bounds.xMax, bounds.yMax));
@@ -173,10 +173,10 @@ public class GameManager : MonoBehaviour
     }
 
     ///// Getters and Setters /////
-    // public Grid Map
-    // {
-    //     get { return this.map; }
-    // }
+    public Grid Map
+    {
+        get { return this.map; }
+    }
 
     public float TimeMatch
     {
