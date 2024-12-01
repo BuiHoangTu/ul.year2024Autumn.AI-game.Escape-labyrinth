@@ -193,6 +193,8 @@ GameObject:
   - component: {fileID: 2084961794805432307}
   - component: {fileID: 5842001126259477319}
   - component: {fileID: 1298411709902244806}
+  - component: {fileID: 1095516454978391440}
+  - component: {fileID: 2906949322981003933}
   m_Layer: 0
   m_Name: Character
   m_TagString: Escaper
@@ -515,3 +517,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DecisionPeriod: 5
   TakeActionsBetweenDecisions: 1
+--- !u!114 &1095516454978391440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6360169023216720149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd5921181056bba27bf8384b2cbe09ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensorName: MapMemory
+  mapSize: {x: 100, y: 100}
+--- !u!114 &2906949322981003933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6360169023216720149}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2902496c0120472b90269f94a0aec7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Record: 0
+  NumStepsToRecord: 0
+  DemonstrationName: Escaper_Lv0
+  DemonstrationDirectory: ReinforcementLearning/demos
