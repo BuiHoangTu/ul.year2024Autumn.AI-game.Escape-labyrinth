@@ -67,7 +67,7 @@ public class MapMemorySensor : MonoBehaviour, ISensor
     ///// ISensor /////
     public ObservationSpec GetObservationSpec()
     {
-        return ObservationSpec.Vector(this.mapSize.x * this.mapSize.y * Enum.GetValues(typeof(MapItem)).Length);
+        return ObservationSpec.Visual(this.mapSize.x, this.mapSize.y, Enum.GetValues(typeof(MapItem)).Length);
     }
 
     public int Write(ObservationWriter writer)
