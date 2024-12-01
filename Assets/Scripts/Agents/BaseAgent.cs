@@ -202,7 +202,6 @@ public abstract class BaseAgent : Agent
     {
         this.transform.position = this.startingPosition;
         this.mapMemory.Reset();
-        EndEpisode();
     }
 
     /// <summary>
