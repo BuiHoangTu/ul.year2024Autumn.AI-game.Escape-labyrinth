@@ -31,4 +31,12 @@ micromamba env export -n unity2022-ai > env.yml && echo -e "- pip:\n$(micromamba
 1. Run `mlagents-learn`
 1. Run the scene to train
 
-**Note**: If any error to gpu. Restart system.
+**Note**: 
+
+1. If any error to gpu. Restart system.
+1. This is a false alarm. Ignore:
+
+    ```
+    UserWarning: Exporting a model to ONNX with a batch_size other than 1, with a variable length with LSTM can cause an error when running the ONNX model with a different batch size. Make sure to save the model with a batch size of 1, or define the initial states (h0/c0) as inputs of the model. 
+    warnings.warn("Exporting a model to ONNX with a batch_size other than 1, " +
+    ```
