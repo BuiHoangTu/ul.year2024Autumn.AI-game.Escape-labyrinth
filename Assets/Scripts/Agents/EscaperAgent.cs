@@ -24,9 +24,6 @@ public class EscaperAgent : BaseAgent
 
     public override void Initialize()
     {
-        var behaviorParams = this.GetComponent<BehaviorParameters>();
-        behaviorParams.TeamId = (int)Team.Escaper;
-
         base.Initialize();
     }
 

@@ -33,9 +33,6 @@ public class FinderAgent : BaseAgent
 
     public override void Initialize()
     {
-        var behaviorParams = this.GetComponent<BehaviorParameters>();
-        behaviorParams.TeamId = (int)Team.Finder;
-
         base.Initialize();
     }
 
