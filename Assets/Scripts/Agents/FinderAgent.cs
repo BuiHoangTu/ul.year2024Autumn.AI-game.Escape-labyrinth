@@ -5,9 +5,6 @@ using System.Collections.Generic;
 
 public class FinderAgent : BaseAgent
 {
-    public List<FinderAgent> teamMateAgents = new();
-
-
     private float distanceToTargetScore;
 
     protected override string TargetTag => "Escaper";

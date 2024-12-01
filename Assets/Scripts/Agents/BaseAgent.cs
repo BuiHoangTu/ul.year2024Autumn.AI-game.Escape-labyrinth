@@ -8,6 +8,8 @@ using static MovementInput;
 
 public abstract class BaseAgent : Agent
 {
+    public List<BaseAgent> teamMateAgents = new();
+
     [Header("Movement Settings")]
     [Tooltip("The type of movement to use for the agent. Infers from the CharacterMovement component if not set.")]
     public KeyMoveType heuristicsMoveType = KeyMoveType.NONE;
@@ -104,14 +106,30 @@ public abstract class BaseAgent : Agent
                 if (foundNewObj)
                 {
                     this.AddReward(Rewards.EXPLORING * Time.fixedDeltaTime);
+                    foreach (var teamMate in this.teamMateAgents)
+                    {
+                        teamMate.mapMemory.AddObstacle(hitObject);
+                    }
                 }
             }
             else if (hitObject.CompareTag(this.SmartEnemyTag))
             {
                 this.mapMemory.AddEnemy(hitObject);
+                foreach (var teamMate in this.teamMateAgents)
+                {
+                    teamMate.mapMemory.AddEnemy(hitObject);
+                }
             }
         }
-        this.mapMemory.AddStaticObject(this.gameObject, MapMemorySensor.MapItem.VISITED);
+        var visitNewTile = this.mapMemory.AddStaticObject(this.gameObject, MapMemorySensor.MapItem.VISITED);
+        if (visitNewTile)
+        {
+            foreach (var teamMate in this.teamMateAgents)
+            {
+                teamMate.mapMemory.AddStaticObject(this.gameObject, MapMemorySensor.MapItem.VISITED);
+            }
+        }
+
 
 
         ////// Reward for closing the target //////
