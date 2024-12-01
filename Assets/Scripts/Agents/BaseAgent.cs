@@ -132,19 +132,22 @@ public abstract class BaseAgent : Agent
         }
     }
 
+    /// <summary>
+    /// 10 params
+    /// </summary>
     public override void CollectObservations(VectorSensor sensor)
     {
-        // self position
+        // self position: 2
         var posOnMap = GetTilePosition();
         sensor.AddObservation(posOnMap);
 
-        // self turning angle
+        // self turning angle: 1
         sensor.AddObservation(this.transform.rotation.eulerAngles.z / 360);
 
-        // self burst energy
+        // self burst energy: 1
         sensor.AddObservation(this.characterMovement.BurstEnergyPercentage);
 
-        // exits position
+        // exits position: 2x3 = 6
         var exits = gameManager.GetExitPositions();
         if (exits.Length != 3)
         {

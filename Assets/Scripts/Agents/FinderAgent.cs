@@ -63,6 +63,10 @@ public class FinderAgent : BaseAgent
         }
     }
 
+    /// <summary>
+    /// 12 observations
+    /// </summary>
+    /// <param name="sensor"></param>
     public override void CollectObservations(VectorSensor sensor)
     {
         base.CollectObservations(sensor);
@@ -73,6 +77,7 @@ public class FinderAgent : BaseAgent
 
         foreach (var teamMate in this.teamMateAgents)
         {
+            // 2 observations
             sensor.AddObservation(teamMate.GetTilePosition());
         }
     }
