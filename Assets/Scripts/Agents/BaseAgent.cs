@@ -5,6 +5,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using static MovementInput;
+using System.Linq;
 
 public abstract class BaseAgent : Agent
 {
@@ -169,9 +170,12 @@ public abstract class BaseAgent : Agent
         {
             Debug.LogError("There should be 3 exits on the map!");
         }
-        sensor.AddObservation(exits[0]);
-        sensor.AddObservation(exits[1]);
-        sensor.AddObservation(exits[2]);
+        // randomize the order of exits
+        var exitsShuffled = exits.OrderBy(x => Random.value).ToArray();
+        
+        sensor.AddObservation(exitsShuffled[0]);
+        sensor.AddObservation(exitsShuffled[1]);
+        sensor.AddObservation(exitsShuffled[2]);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
