@@ -1,10 +1,8 @@
 using UnityEngine;
 
-public class MovementInput
+public class MovementInput : MonoBehaviour, IMovementInput
 {
     public KeyMoveType keyMoveType = KeyMoveType.ARROR;
-
-
 
     public MovingType GetMovementInput()
     {
@@ -39,6 +37,46 @@ public class MovementInput
         };
     }
 
+    public MovementState HandleInput()
+    {
+        var move = GetMovementInput();
+        var turn = GetRotationInput();
+        var burst = GetBurstInput();
+
+        if (burst)
+        {
+            return move switch
+            {
+                MovingType.FORWARD => MovementState.BURST_FORWARD,
+                MovingType.BACKWARD => MovementState.BURST_BACKWARD,
+                _ => MovementState.IDLE
+            };
+        }
+
+        if (move != MovingType.STOP)
+        {
+            return move switch
+            {
+                MovingType.FORWARD => MovementState.MOVE_FORWARD,
+                MovingType.BACKWARD => MovementState.MOVE_BACKWARD,
+                _ => MovementState.IDLE
+            };
+        }
+
+        if (turn != TurningType.STOP)
+        {
+            return turn switch
+            {
+                TurningType.LEFT => MovementState.TURN_LEFT,
+                TurningType.RIGHT => MovementState.TURN_RIGHT,
+                _ => MovementState.IDLE
+            };
+        }
+
+        return MovementState.IDLE;
+    }
+
+    KeyMoveType IMovementInput.keyMoveType { get => keyMoveType; set => keyMoveType = value; }
 
     /*************** Support enums ***************/
     public enum KeyMoveType
@@ -48,4 +86,6 @@ public class MovementInput
         IJKL,
         NONE
     }
+
+
 }
