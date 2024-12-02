@@ -9,7 +9,6 @@ using UnityEngine.Tilemaps;
 public class PathFinder : MonoBehaviour
 {
     private GameManager gameManager;
-    private Vector2Int gridSize;
     private Grid fullMap;
     private Tilemap obstacleTilemap;
     private HashSet<Vector2Int> obstaclesPos;
@@ -27,7 +26,6 @@ public class PathFinder : MonoBehaviour
     private void Start()
     {
         var (min, max) = this.gameManager.GetMapLimits();
-        this.gridSize = new Vector2Int(max.x - min.x, max.y - min.y);
 
         this.fullMap = this.gameManager.Map;
         if (this.fullMap == null)
@@ -57,19 +55,20 @@ public class PathFinder : MonoBehaviour
         // {
         //     Debug.Log("Obstacle at " + pos);
         // }
-        
+
 
         // draw path
-        var self = this.gameManager.GetPositionOnMap(this.transform.position);
         var exit = this.gameManager.GetExitPositions()[0];
         // Debug.Log("Finding path from " + self + " to " + exit);
-        var path = FindPath(self, exit);  
+        var path = FindPath(exit);
         this.DebugDrawPath(path);
     }
 
 
-    public List<Vector2Int> FindPath(Vector2Int start, Vector2Int goal)
+    public List<Vector2Int> FindPath(Vector2Int goal)
     {
+        Vector2Int start = this.gameManager.GetPositionOnMap(this.transform.position);
+
         // Open and closed lists
         var openList = new PriorityQueue<Node>();
         HashSet<Node> closedList = new HashSet<Node>();
@@ -133,14 +132,14 @@ public class PathFinder : MonoBehaviour
         return path;
     }
 
-    private void DebugDrawPath(List<Vector2Int> path)
+    public void DebugDrawPath(List<Vector2Int> path)
     {
         Assert.IsNotNull(path, "Path is null!");
         foreach (var position in path)
         {
             Debug.DrawLine(
-                new Vector3(position.x, position.y, 0), 
-                new Vector3(position.x + 1, position.y + 1, 0), 
+                new Vector3(position.x, position.y, 0),
+                new Vector3(position.x + 1, position.y + 1, 0),
                 Color.green, 10f);
         }
     }
@@ -159,8 +158,8 @@ public class PathFinder : MonoBehaviour
         var (limitMin, limitMax) = this.gameManager.GetMapLimits();
 
         var res = neighbors.Where(
-            n => 
-                n.x >= limitMin.x && n.x < limitMax.x && 
+            n =>
+                n.x >= limitMin.x && n.x < limitMax.x &&
                 n.y >= limitMin.y && n.y < limitMax.y
         );
         // foreach (var neighbor in res)
