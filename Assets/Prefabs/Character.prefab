@@ -50,8 +50,8 @@ MonoBehaviour:
   - Finder
   - Exit
   - Obstacle
-  m_RaysPerDirection: 10
-  m_MaxRayDegrees: 60
+  m_RaysPerDirection: 5
+  m_MaxRayDegrees: 45
   m_SphereCastRadius: 0
   m_RayLength: 10
   m_RayLayerMask:
@@ -191,9 +191,10 @@ GameObject:
   - component: {fileID: 875504185081516708}
   - component: {fileID: 5108788923091777268}
   - component: {fileID: 6852694226613395895}
+  - component: {fileID: 7282770890667574183}
   m_Layer: 0
   m_Name: Character
-  m_TagString: Escaper
+  m_TagString: Finder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -257,7 +258,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.2783019, g: 0.40080118, b: 1, a: 1}
+  m_Color: {r: 0.9528302, g: 0.037693266, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -464,3 +465,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1d5b8229d5b50ee08051850b453ce10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7282770890667574183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6360169023216720149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dc52d887e6c1e461aac08e8994d9564, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxAngleDelta: 50
+  RandomTurnChance: 50
+  ChangingPatrolPosTime: 20
+  teammate: {fileID: 0}
