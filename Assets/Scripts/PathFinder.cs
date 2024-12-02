@@ -68,7 +68,11 @@ public class PathFinder : MonoBehaviour
     public List<Vector2Int> FindPath(Vector2Int goal)
     {
         Vector2Int start = this.gameManager.GetPositionOnMap(this.transform.position);
+        return FindPath(start, goal);
+    }
 
+    public List<Vector2Int> FindPath(Vector2Int start, Vector2Int goal)
+    {
         // Open and closed lists
         var openList = new PriorityQueue<Node>();
         HashSet<Node> closedList = new HashSet<Node>();
@@ -142,6 +146,42 @@ public class PathFinder : MonoBehaviour
                 new Vector3(position.x + 1, position.y + 1, 0),
                 Color.green, 10f);
         }
+    }
+
+    public List<Vector2Int> FindNearbyPositions(Vector2Int target, int maxDistance)
+    {
+        var nearbyPositions = new List<Vector2Int>();
+        var visited = new HashSet<Vector2Int>();
+
+        // BFS queue
+        var queue = new Queue<(Vector2Int Position, int Distance)>();
+        queue.Enqueue((target, 0));
+        visited.Add(target);
+
+        while (queue.Any())
+        {
+            var (currentPosition, distance) = queue.Dequeue();
+
+            // Add position to result if within distance
+            if (distance <= maxDistance)
+                nearbyPositions.Add(currentPosition);
+
+            // Stop exploring further if maximum distance is reached
+            if (distance == maxDistance)
+                continue;
+
+            // Explore neighbors
+            foreach (var neighbor in GetNeighbors(currentPosition))
+            {
+                if (!visited.Contains(neighbor) && IsWalkable(neighbor))
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue((neighbor, distance + 1));
+                }
+            }
+        }
+
+        return nearbyPositions;
     }
 
 
