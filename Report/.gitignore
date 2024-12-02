@@ -8,6 +8,11 @@
 *.toc
 *-SAVE-ERROR
 *.blg
+*.bbl
+*.bcf
+*.bib
+!bib.bib
+*.run.xml
 
 ## vscode 
 .vscode/**
