@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.MLAgents.Sensors;
 using UnityEngine;
 
 
@@ -29,6 +30,9 @@ public class FinderAI : MonoBehaviour, IMovementInput
     private float observingAngleLeft;
     private float lastAngle;
     private MovementState observingTurnDirection;
+
+    // for vision 
+    private RayPerceptionSensorComponent2D visionSensor;
 
 
 
@@ -81,6 +85,8 @@ public class FinderAI : MonoBehaviour, IMovementInput
 
         this.observingAngleLeft = 0;
         this.observingTurnDirection = MovementState.IDLE;
+
+        this.visionSensor = this.GetComponentInChildren<RayPerceptionSensorComponent2D>();
     }
 
     void Update()
@@ -110,8 +116,26 @@ public class FinderAI : MonoBehaviour, IMovementInput
             this.fsmState = FinderState.PATROLLING;
         }
 
+        // vision
+        var rayOutputs = RayPerceptionSensor.Perceive(this.visionSensor.GetRayPerceptionInput()).RayOutputs;
+        foreach (var rayOutput in rayOutputs)
+        {
+            GameObject hitObject = rayOutput.HitGameObject;
+            if (hitObject == null) continue;
 
+            if (hitObject.CompareTag("Escaper"))
+            {
+                var targetPos = this.gameManager.GetPositionOnMap(hitObject.transform.position);
+                if (targetPos != this.targetPos)
+                {
+                    this.path = this.pathFinder.FindPath(this.gameManager.GetPositionOnMap(hitObject.transform.position));
+                    this.currentPathIndex = 0;
+                }
 
+                this.fsmState = FinderState.CHASING_ESCAPER;
+                break;
+            }
+        }
     }
 
     private Vector2Int RandomPatrolPos(int index)
@@ -132,13 +156,13 @@ public class FinderAI : MonoBehaviour, IMovementInput
         switch (this.fsmState)
         {
             case FinderState.PATROLLING:
-                return this.FollowPath(FinderState.OBSERVING);
+                return this.FollowPath(FinderState.OBSERVING, false);
 
             case FinderState.OBSERVING:
                 return this.Turn1Round();
 
             case FinderState.CHASING_ESCAPER:
-                return this.FollowPath(FinderState.OBSERVING);
+                return this.FollowPath(FinderState.OBSERVING, true);
 
             case FinderState.IDLE:
             default:
@@ -146,7 +170,7 @@ public class FinderAI : MonoBehaviour, IMovementInput
         }
     }
 
-    private MovementState FollowPath(FinderState endState)
+    private MovementState FollowPath(FinderState endState, bool isChasing)
     {
         if (this.currentPathIndex < this.path.Count)
         {
@@ -156,7 +180,7 @@ public class FinderAI : MonoBehaviour, IMovementInput
             Vector2 currPos = this.transform.position;
 
             Vector2 deltaPos = nextPos - currPos;
-            
+
             if ((deltaPos.x * deltaPos.x + deltaPos.y * deltaPos.y) < 0.1)
             {
                 this.currentPathIndex++;
@@ -198,6 +222,10 @@ public class FinderAI : MonoBehaviour, IMovementInput
             }
 
             // move forward
+            if (isChasing)
+            {
+                return MovementState.BURST_FORWARD;
+            }
             return MovementState.MOVE_FORWARD;
         }
 
