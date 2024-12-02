@@ -1,0 +1,214 @@
+\documentclass[a4paper,12pt]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[style=apa]{biblatex}
+
+
+% Bibliography
+\addbibresource{bib.bib}
+
+% Page Setup
+\geometry{margin=1in}
+
+% Code Snippet Settings
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{lightgray!20},
+    frame=single,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!70!black},
+    stringstyle=\color{red},
+}
+
+% Title Section
+\title{Unity RTS Unit Report: Pathfinding and Finite State Machine
+\\ \small Word Count: 1607 
+\\ Student ID: 24005665}
+
+\author{Hoang Tu BUI}
+\date{\today}
+
+\begin{document}
+
+% Title Page
+\maketitle
+\tableofcontents
+\newpage
+
+Team break up: Our team decided to work on the project individually. We shared the same codebase for movement and assets but each of us had to implement the AI for the units on our own. This report is written based on my own implementation.
+
+
+
+% Sections
+\section{Introduction}
+
+
+\subsection{Game Overview}
+The game designed and developed for this project is a real-time strategy (RTS) in which two teams: Finder (F) and Escaper (E), compete against each other. 
+The Finder team has to capture the Escaper before it reaches one of three exits.
+Both teams are controlled by AI agents implemented using Finite State Machines (FSMs) with the support of pathfinding algorithms for navigation.
+
+
+\subsection{Entities}
+The game consists of 4 main entities:
+\begin{itemize}
+    \item Finder: 
+    There are two Finders in the game, each with the primary objective of locating and capturing the Escaper.
+    The Finders have superior base speed (10\%) compared to the Escaper allowing them to cover more ground.
+    They are also capable of informing each other of the Escaper's location when one spots it.
+    Their pursuit is aided by a limited burst of speed (30\%) which while not as fast as the Escaper's speed burst, is enough to help keeping track of the Escaper.
+    After the burst wears out for both parties, the Finders are mostly guaranteed to catch the Escaper.
+    
+    \item Escaper: 
+    The Escaper is a single unit attempting to reach one of the three exits on the map.
+    It has faster bursts of speed (80\% of its base speed) compared to the Finders, allowing it to evade capture and hide.
+    The Escaper also possesses an advantage in terms of vision range (43\% further), allowing it to spot the Finders from a distance.
+    
+    \item Exit: 
+    There are three exits scattered throughout the map. 
+    The exits are positioned in such a way that the Finders have no way of covering all of them at once.
+    
+    \item Obstacle: 
+    Static objects that placed around the map limiting vision and movement. 
+    They can either be hiding spots or dead end for the Escaper.
+\end{itemize}
+
+In summary, this game presents a highly strategic scenario where two Finders work together to capture a lone Seeker, who must utilize speed bursts and environmental knowledge to escape.
+
+
+
+\section{Analysis}
+In this subsection, I discuss the rationale behind the choice of using the chosen Artificial Intelligence (AI) techniques for both the Escaper and Finder units in the game.
+I explain the selection of the Finite State Machine (FSM) to govern the agents' behaviors, analyze its functionality, and delve into the challenges faced during the implementation.
+
+
+\subsection{Rationale for Pathfinding}
+Pathfinding is a crucial aspect of any game where units need to navigate the environment.
+For this game, the Escaper needs to find the best path to reach one of the exits while avoiding the Finders and the Finders need to pursuit the Escaper and find the optimal path to guard the exits.
+I chose to implement the A* algorithm and BFS.
+
+A* can be considered the best pathfinding algorithm.
+It combines elements of both Dijkstra's algorithm and Greedy Best-First Search, using two key functions: the cost to reach the node (g) and the estimated cost to the goal (h). 
+The algorithm maintains a priority queue, exploring nodes with the lowest total estimated cost (f = g + h). 
+As it progresses, A* chooses the most promising node based on these values, resulting the most efficient path to the goal \cite{article}.
+
+BFS, on the other hand, is a simpler algorithm that explores all neighbor nodes at the present depth prior to moving on to nodes at the next depth level.
+This algorithm is used solely for the Finders to navigate while patrolling the exit where they explore the area without a specific goal.
+
+
+\subsection{Rationale for Finite State Machine}
+Finite State Machines (FSMs) are a common method for modeling the behavior of AI agents in games.
+The FSM ensures that the agents' behavior is divided into a set of states, each with specific conditions for transitioning between states.
+It is a simple and effective way to manage complex behaviors, making it ideal for the game's units, provide clear logic for the agents' decision-making process.
+In this game, Finite State Machines are used to model the behavior of both the Escaper, the Finders and the movement of both types of units.
+
+For the Escaper, the FSM is used to model the behavior of the Escaping, which includes the states of:
+\begin{itemize}
+    \item Idle: The Escaper remains stationary while calculating the next move.
+    \item Move to Exit: The Escaper moves towards the safe, nearest exit.
+    \item Flee: When the Escaper sees a Finder and the Finder is also looking to the Escaper place.
+        It will move backward to the nearest safe spot.
+\end{itemize}
+
+For the Finders, the FSM includes the states of:
+\begin{itemize}
+    \item Idle: The Finder remains stationary while choosing the next spot to patrol and calculating the path.
+        During this state, the Finder will also decide if it want to move to the unguarded exit.
+    \item Patrol: The Finder moves around the exit area.
+        After reaching the destination, it will observe the area.
+    \item Observe: The Finder will turn around to look for the Escaper.
+        If nothing suspicious is found, it will return to the Idle state.
+    \item Chasing: At any point, if any Finder sees the Escaper, all Finders will start chasing the Escaper.
+        If they lose sight of the Escaper, they will return to the Observe state to see if the Escaper is hiding nearby.
+\end{itemize}
+
+Finally, the FSM is used to model the movement of units.
+They both share the same sets of movement states:
+\begin{itemize}
+    \item Idle: The unit remains stationary.
+    \item Turn Left: The unit rotates to the left.
+    \item Turn Right: The unit rotates to the right.
+    \item Forward: The unit moves forward. It is useful for common movement.
+    \item Backward: The unit moves backward. It is useful for fleeing where the unit does not have time to turn around.
+    \item Burst Forward: The unit moves forward at a faster speed. It is useful for chasing. After the duration, the unit will return to the Forward state.
+    \item Burst Backward: The unit moves backward at a faster speed. After the duration, the unit will return to the Backward state.
+\end{itemize}
+While most of the states are free to transition to any other states, once the Burst energy is exhausted, the unit transitions back to its normal movement states (Forward or Backward)
+
+
+\subsection{Challenging in Implementation}
+The main challenge faced during the implementation of the FSM was the complexity of managing the transitions between states.
+Some proposed methods like using transition tables not only made the code more bloated but also made development process restrictive.
+So my choice was to use a more flexible approach where each state is responsible for deciding the next state based on the current conditions.
+
+Another challenge was the implementation of the Flee state. 
+Initially, It was designed to run away when it sees a Finder.
+The Escaper would continuously flee from the Finder without finding a safe route, causing it to get stuck in a loop. I solved this by updating the pathfinding system to mark dangerous areas and avoid them.
+Still, the Escaper sometimes got stuck in that state even though it happened less frequently.
+Turned out, while the pathfinder found another way, it still involved moving near the Finder.
+To improve the Escaper's behavior, I adjusted its fleeing logic so that it only flees when it is in immediate danger of being seen by the Finder.
+Now, it can even walk behind the Finder's back.
+
+
+
+\section{Reflection}
+\subsection{Results and Behavior}
+% Discuss the outcomes of your implementation:
+% \begin{itemize}
+%     \item How well the RTS unit behaved according to expectations.
+%     \item Examples of scenarios where the AI worked as intended.
+% \end{itemize}
+The implementation of the FSM and pathfinding algorithms resulted in the expected behavior of the units.
+The Escaper chooses the nearest exit but on sight of a Finder, it will choose another route.
+Fleeing with high burst speed helped the Escaper to run away multiple times and find another path.
+The Finders patrol the exits and chase the Escaper when spotted.
+When one Finder sees the Escaper, all Finders will start chasing it.
+The Observe state gains some win to the Finders as they can find the target hiding at the corner of the map.
+
+
+\subsection{Limitations and Improvements}
+When being chased into a dead-end, while the Finders can't see the Escaper and leave, the Escaper will stay there forever because its only exit is marked as dangerous.
+One possible solution is to add a timer to the dangerous area, after a certain amount of time, the area will be marked as safe.
+
+In the same example above, while it is obvious that the Escaper has no other way to escape, the Finders leave because they can't see the Escaper in their blind spot.
+To address this problem, a heuristic can be integrated into the pathfinding system to predict the Escaper's possible location based on the last seen position.
+However, it is clear that it needs a lot of effort to implement and is resource-consuming.
+
+In addition, the dangerous area is currently marked as a circle around the Finder's position.
+This is not ideal as they possess a cone of vision.
+The area in front of the Finder should be marked dangerous instead.
+
+
+
+\section{Conclusion}
+The development of this Real-Time Strategy (RTS) game demonstrates the effective application of Artificial Intelligence techniques, specifically Finite State Machines (FSMs) and pathfinding algorithms, to create intelligent and dynamic game agent behaviors. 
+The FSM model allowed for clear and adaptable behaviors, with both the Escaper and Finders demonstrating intelligent decision-making processes based on their states. The behavior of the units, including patrolling, chasing, and fleeing, aligned well with the intended game design.
+
+The use of A* and Breadth-First Search (BFS) pathfinding algorithms enabled sophisticated navigation for both the Escaper and Finders. The A* algorithm, with its ability to find the most efficient path by balancing current path cost and estimated goal distance, proved particularly valuable for strategic movement. Similarly, the FSM approach allowed for clear, modular state management that could adapt to changing game conditions.
+
+While the implementation met its primary objectives, the project also revealed potential areas for future enhancement. Proposed improvements include developing more sophisticated dangerous area marking, implementing predictive pathfinding heuristics, and refining unit behaviors in edge cases such as dead-end scenarios.
+
+
+\section*{Sources}
+\begin{itemize}
+    \item Source code OneDrive: \url{https://ulcampus-my.sharepoint.com/:f:/g/personal/24005665_studentmail_ul_ie/Ev0PD7rGRCtEuxepy5b8lOMBmPXEjmFK2GCyAfGaKYPKzQ?e=hZ2gVT}
+    \item Source code GitHub: \url{https://github.com/BuiHoangTu/ul.year2024Autumn.AI-game.Escape-labyrinth}
+    \item Video: 
+\end{itemize}
+
+
+\printbibliography
+
+
+\end{document}

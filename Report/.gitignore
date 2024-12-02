@@ -1,0 +1,21 @@
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.gz
+*.out
+*.pdf
+*.toc
+*-SAVE-ERROR
+*.blg
+*.bbl
+*.bcf
+*.bib
+!bib.bib
+*.run.xml
+
+## vscode 
+.vscode/**
+
+# local tests
+test*
