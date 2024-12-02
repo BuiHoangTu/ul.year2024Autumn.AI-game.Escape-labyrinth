@@ -1,0 +1,13 @@
+# mlagents-learn generated files
+## checkpoint files
+*.pt
+*[0-9].onnx
+
+## events files
+*.[0-9]
+
+## train logs 
+run_logs/
+
+## generated train configs
+configuration.yaml

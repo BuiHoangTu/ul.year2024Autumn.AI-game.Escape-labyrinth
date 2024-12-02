@@ -26,6 +26,9 @@
 # Visual Studio cache directory
 .vs/
 
+# Visual Studio Code config directory
+.vscode/
+
 # Gradle cache directory
 .gradle/
 
@@ -73,3 +76,12 @@ crashlytics-build.properties
 
 # Other crash report files
 mono_crash.*.blob
+
+# Files that want to be ignored
+*.ignored
+*.ignoring
+
+# MLAgents
+Assets/ML-Agents
+Assets/ML-Agents.meta
+results/ppo
