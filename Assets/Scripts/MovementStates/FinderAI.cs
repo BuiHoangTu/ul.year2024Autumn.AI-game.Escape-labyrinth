@@ -38,6 +38,10 @@ public class FinderAI : MonoBehaviour, IMovementInput
         {
             Debug.LogError("Missing teammate!");
         }
+        if (this.teammate == this)
+        {
+            Debug.LogError("Teammate cannot be itself!");
+        }
 
         this.pathFinder = this.GetComponent<PathFinder>();
         if (this.pathFinder == null)
