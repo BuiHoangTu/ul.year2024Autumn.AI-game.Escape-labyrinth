@@ -83,7 +83,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
             return this.FollowPath();
         }
         
-        
+
 
         return MovementState.IDLE;
     }
@@ -104,7 +104,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
             float deltaAngle = Mathf.DeltaAngle(this.transform.rotation.eulerAngles.z, targetAngle);
             if (Mathf.Abs(deltaAngle) > 20)
             {
-                if (deltaAngle > 0)
+                if (deltaAngle < 0)
                 {
                     return MovementState.TURN_RIGHT;
                 }
