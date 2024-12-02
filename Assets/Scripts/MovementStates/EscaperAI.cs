@@ -147,6 +147,8 @@ public class EscaperAI : MonoBehaviour, IMovementInput
         }
 
         // reached the target
+        this.fsmState.UpdateState(EscaperFSM.EscaperState.IDLE);
+
         return MovementState.IDLE;
     }
 }
