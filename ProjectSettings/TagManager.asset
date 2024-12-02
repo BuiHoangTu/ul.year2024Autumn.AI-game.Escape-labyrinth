@@ -5,7 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Escaper
-  - Seeker
+  - Finder
+  - Exit
+  - Obstacle
   layers:
   - Default
   - TransparentFX
