@@ -115,6 +115,7 @@ For the Escaper, the FSM is used to model the behavior of the Escaping, which in
 For the Finders, the FSM includes the states of:
 \begin{itemize}
     \item Idle: The Finder remains stationary while choosing the next spot to patrol and calculating the path.
+        During this state, the Finder will also decide if it want to move to the unguarded exit.
     \item Patrol: The Finder moves around the exit area.
         After reaching the destination, it will observe the area.
     \item Observe: The Finder will turn around to look for the Escaper.
