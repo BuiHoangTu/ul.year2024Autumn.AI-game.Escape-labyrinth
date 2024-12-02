@@ -56,57 +56,57 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Escaper has won the game!");
 
-        // Notify EscaperAgent
-        foreach (var escaper in escapers)
-        {
-            escaper.Win();
-        }
+        // // Notify EscaperAgent
+        // foreach (var escaper in escapers)
+        // {
+        //     escaper.Win();
+        // }
 
-        // Notify FinderAgent
-        foreach (var finder in finders)
-        {
-            finder.Lose();
-        }
+        // // Notify FinderAgent
+        // foreach (var finder in finders)
+        // {
+        //     finder.Lose();
+        // }
 
-        ResetGameState();
+        GameEnded();
     }
 
     public void FinderWin()
     {
         Debug.Log("Finder has won the game!");
 
-        // Notify EscaperAgent
-        foreach (var escaper in escapers)
-        {
-            escaper.Lose();
-        }
+        // // Notify EscaperAgent
+        // foreach (var escaper in escapers)
+        // {
+        //     escaper.Lose();
+        // }
 
-        // Notify FinderAgent
-        foreach (var finder in finders)
-        {
-            finder.Win();
-        }
+        // // Notify FinderAgent
+        // foreach (var finder in finders)
+        // {
+        //     finder.Win();
+        // }
 
-        ResetGameState();
+        GameEnded();
     }
 
     public void Tie()
     {
         Debug.Log("It's a tie!");
 
-        // Notify EscaperAgent
-        foreach (var escaper in escapers)
-        {
-            escaper.Lose();
-        }
+        // // Notify EscaperAgent
+        // foreach (var escaper in escapers)
+        // {
+        //     escaper.Lose();
+        // }
 
-        // Notify FinderAgent
-        foreach (var finder in finders)
-        {
-            finder.Lose();
-        }
+        // // Notify FinderAgent
+        // foreach (var finder in finders)
+        // {
+        //     finder.Lose();
+        // }
 
-        ResetGameState();
+        GameEnded();
     }
 
     /// <summary>
@@ -158,20 +158,24 @@ public class GameManager : MonoBehaviour
         return (new Vector2Int(bounds.xMin, bounds.yMin), new Vector2Int(bounds.xMax, bounds.yMax));
     }
 
-    private void ResetGameState()
+    private void GameEnded()
     {
         this.timeMatch = 0;
 
-        // Reset all agents
-        foreach (var escaper in escapers)
-        {
-            escaper.ResetGameState();
-        }
+        // // Reset all agents
+        // foreach (var escaper in escapers)
+        // {
+        //     escaper.ResetGameState();
+        // }
 
-        foreach (var finder in finders)
-        {
-            finder.ResetGameState();
-        }
+        // foreach (var finder in finders)
+        // {
+        //     finder.ResetGameState();
+        // }
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     ///// Getters and Setters /////
