@@ -126,6 +126,9 @@ public class FinderAI : MonoBehaviour, IMovementInput
             if (hitObject.CompareTag("Escaper"))
             {
                 var targetPos = this.gameManager.GetPositionOnMap(hitObject.transform.position);
+
+                this.teammate.Alert(targetPos);
+
                 if (targetPos != this.targetPos)
                 {
                     this.path = this.pathFinder.FindPath(this.gameManager.GetPositionOnMap(hitObject.transform.position));
@@ -259,6 +262,19 @@ public class FinderAI : MonoBehaviour, IMovementInput
 
         return this.observingTurnDirection;
     }
+
+    public void Alert(Vector2Int escaperPos)
+    {
+        if (escaperPos != this.targetPos)
+        {
+            this.targetPos = escaperPos;
+            this.path = this.pathFinder.FindPath(escaperPos);
+            this.currentPathIndex = 0;
+        }
+
+        this.fsmState = FinderState.CHASING_ESCAPER;
+    }
+
 
     ///// Finder states /////
     private enum FinderState
