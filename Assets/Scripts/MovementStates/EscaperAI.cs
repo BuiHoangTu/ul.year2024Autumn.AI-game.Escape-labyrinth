@@ -116,7 +116,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
             float deltaAngle = Mathf.DeltaAngle(this.movementFSM.headingAngle, targetAngle);
             if (Mathf.Abs(deltaAngle) > this.MaxAngleDelta)
             {
-                Debug.Log("Self: " + currPos + " Target: " + nextPos + " Target Angle: " + targetAngle + " Current Angle: " + this.movementFSM.headingAngle + " Delta Angle: " + deltaAngle);
+                // Debug.Log("Self: " + currPos + " Target: " + nextPos + " Target Angle: " + targetAngle + " Current Angle: " + this.movementFSM.headingAngle + " Delta Angle: " + deltaAngle);
 
                 if (deltaAngle < 0)
                 {
