@@ -1,0 +1,124 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public class EscaperAI : MonoBehaviour, IMovementInput
+{
+    private PathFinder pathFinder;
+    private List<Vector2Int> path;
+    private int currentPathIndex;
+    private EscaperFSM fsmState;
+    private MovementFSM movementFSM;
+    private GameManager gameManager;
+
+
+    void Start()
+    {
+        this.pathFinder = this.GetComponent<PathFinder>();
+        if (this.pathFinder == null)
+        {
+            Debug.LogError("PathFinder not found!");
+        }
+
+        this.path = new List<Vector2Int>();
+        this.currentPathIndex = 0;
+
+        this.fsmState = new EscaperFSM();
+
+        this.movementFSM = this.GetComponent<CharacterMovement>().movementFSM;
+        if (this.movementFSM == null)
+        {
+            Debug.LogError("MovementFSM not found!");
+        }
+
+        this.gameManager = this.GetComponentInParent<GameManager>();
+        if (this.gameManager == null)
+        {
+            Debug.LogError("GameManager not found!");
+        }
+    }
+
+    void Update()
+    {
+        if (this.fsmState.currentState == EscaperFSM.EscaperState.IDLE)
+        {
+            // find the shortest path to the exit
+            Vector2Int[] exits = this.gameManager.GetExitPositions();
+            Vector2Int[][] solutions = new Vector2Int[exits.Length][];
+            for (int i = 0; i < exits.Length; i++)
+            {
+                this.path = this.pathFinder.FindPath(exits[i]);
+                solutions[i] = this.path.ToArray();
+            }
+
+            int shortestPathIndex = 0;
+            int shortestPathLength = solutions[0].Length;
+            for (int i = 1; i < solutions.Length; i++)
+            {
+                if (solutions[i].Length < shortestPathLength)
+                {
+                    shortestPathIndex = i;
+                    shortestPathLength = solutions[i].Length;
+                }
+            }
+            this.path = new List<Vector2Int>(solutions[shortestPathIndex]);
+            this.currentPathIndex = 0;
+
+            this.fsmState.UpdateState(EscaperFSM.EscaperState.TO_EXIT);
+
+            this.pathFinder.DebugDrawPath(this.path);
+        }
+    }
+
+    public MovementInput.KeyMoveType keyMoveType
+    {
+        get => MovementInput.KeyMoveType.NONE;
+        set { }
+    }
+
+    public MovementState HandleInput()
+    {
+        if (this.fsmState.currentState == EscaperFSM.EscaperState.TO_EXIT)
+        {
+            return this.FollowPath();
+        }
+        
+        
+
+        return MovementState.IDLE;
+    }
+
+
+    private MovementState FollowPath()
+    {
+        if (this.currentPathIndex < this.path.Count)
+        {
+            Vector2Int nextPos = this.path[this.currentPathIndex];
+            Vector2Int currPos = this.gameManager.GetPositionOnMap(this.transform.position);
+
+            Vector2Int direction = nextPos - currPos;
+
+            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            // delta angle > 20 degrees, need to rotate
+            float deltaAngle = Mathf.DeltaAngle(this.transform.rotation.eulerAngles.z, targetAngle);
+            if (Mathf.Abs(deltaAngle) > 20)
+            {
+                if (deltaAngle > 0)
+                {
+                    return MovementState.TURN_RIGHT;
+                }
+                else
+                {
+                    return MovementState.TURN_LEFT;
+                }
+            }
+
+            // move forward
+            return MovementState.MOVE_FORWARD;
+        }
+
+        // reached the target
+        return MovementState.IDLE;
+    }
+}
