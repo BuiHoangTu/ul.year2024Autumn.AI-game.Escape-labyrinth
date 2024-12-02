@@ -80,6 +80,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6360169023216720149, guid: 8af1d07948740f3769d4a3b08372e381, type: 3}
+      propertyPath: m_TagString
+      value: Escaper
+      objectReference: {fileID: 0}
     - target: {fileID: 7282770890667574183, guid: 8af1d07948740f3769d4a3b08372e381, type: 3}
       propertyPath: MaxAngleDelta
       value: 20
