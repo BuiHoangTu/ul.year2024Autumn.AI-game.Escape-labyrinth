@@ -8,6 +8,11 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage[style=apa]{biblatex}
+
+
+% Bibliography
+\addbibresource{bib.bib}
 
 % Page Setup
 \geometry{margin=1in}
@@ -28,7 +33,7 @@
 
 % Title Section
 \title{Unity RTS Unit Report: Pathfinding and Finite State Machine
-\\ \small Word Count: XXX 
+\\ \small Word Count: 1607 
 \\ Student ID: 24005665}
 
 \author{Hoang Tu BUI}
@@ -40,6 +45,10 @@
 \maketitle
 \tableofcontents
 \newpage
+
+Team break up: Our team decided to work on the project individually. We shared the same codebase for movement and assets but each of us had to implement the AI for the units on our own. This report is written based on my own implementation.
+
+
 
 % Sections
 \section{Introduction}
@@ -92,7 +101,7 @@ I chose to implement the A* algorithm and BFS.
 A* can be considered the best pathfinding algorithm.
 It combines elements of both Dijkstra's algorithm and Greedy Best-First Search, using two key functions: the cost to reach the node (g) and the estimated cost to the goal (h). 
 The algorithm maintains a priority queue, exploring nodes with the lowest total estimated cost (f = g + h). 
-As it progresses, A* chooses the most promising node based on these values, resulting the most efficient path to the goal.
+As it progresses, A* chooses the most promising node based on these values, resulting the most efficient path to the goal \cite{article}.
 
 BFS, on the other hand, is a simpler algorithm that explores all neighbor nodes at the present depth prior to moving on to nodes at the next depth level.
 This algorithm is used solely for the Finders to navigate while patrolling the exit where they explore the area without a specific goal.
@@ -192,6 +201,9 @@ While the implementation met its primary objectives, the project also revealed p
 
 
 
+
+
+\printbibliography
 
 
 \end{document}
