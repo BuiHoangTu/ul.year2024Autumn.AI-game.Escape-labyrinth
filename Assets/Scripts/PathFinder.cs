@@ -12,6 +12,7 @@ public class PathFinder : MonoBehaviour
     private Grid fullMap;
     private Tilemap obstacleTilemap;
     private HashSet<Vector2Int> obstaclesPos;
+    private Dictionary<int, Vector2Int> dangerPositions;
 
 
     private void Awake()
@@ -21,6 +22,7 @@ public class PathFinder : MonoBehaviour
         {
             Debug.LogError("GameManager not found!");
         }
+        dangerPositions = new Dictionary<int, Vector2Int>();
     }
 
     private void Start()
@@ -184,6 +186,11 @@ public class PathFinder : MonoBehaviour
         return nearbyPositions;
     }
 
+    public void SetDangerPosition(int id, Vector2Int position)
+    {
+        dangerPositions[id] = position;
+    }
+
 
     private IEnumerable<Vector2Int> GetNeighbors(Vector2Int position)
     {
@@ -211,7 +218,16 @@ public class PathFinder : MonoBehaviour
 
     private bool IsWalkable(Vector2Int position)
     {
-        return !this.obstaclesPos.Contains(position);
+        if(this.obstaclesPos.Contains(position))
+            return false;
+
+        foreach (var danger in dangerPositions)
+        {
+            if (GetDistance(position, danger.Value) < 3)
+                return false;
+        }
+
+        return true;
     }
 
     private int GetDistance(Vector2Int a, Vector2Int b)
