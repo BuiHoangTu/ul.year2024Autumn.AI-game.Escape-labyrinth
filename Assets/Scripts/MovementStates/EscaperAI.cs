@@ -11,7 +11,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
     private PathFinder pathFinder;
     private List<Vector2Int> path;
     private int currentPathIndex;
-    private EscaperFSM fsmState;
+    private EscaperState fsmState;
     private MovementFSM movementFSM;
     private GameManager gameManager;
 
@@ -27,7 +27,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
         this.path = new List<Vector2Int>();
         this.currentPathIndex = 0;
 
-        this.fsmState = new EscaperFSM();
+        this.fsmState = EscaperState.IDLE;
 
         this.movementFSM = this.GetComponent<CharacterMovement>().movementFSM;
         if (this.movementFSM == null)
@@ -44,7 +44,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
 
     void Update()
     {
-        if (this.fsmState.currentState == EscaperFSM.EscaperState.IDLE)
+        if (this.fsmState == EscaperState.IDLE)
         {
             // find the shortest path to the exit
             Vector2Int[] exits = this.gameManager.GetExitPositions();
@@ -68,7 +68,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
             this.path = new List<Vector2Int>(solutions[shortestPathIndex]);
             this.currentPathIndex = 0;
 
-            this.fsmState.UpdateState(EscaperFSM.EscaperState.TO_EXIT);
+            this.fsmState = EscaperState.TO_EXIT;
 
             this.pathFinder.DebugDrawPath(this.path);
         }
@@ -82,7 +82,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
 
     public MovementState HandleInput()
     {
-        if (this.fsmState.currentState == EscaperFSM.EscaperState.TO_EXIT)
+        if (this.fsmState == EscaperState.TO_EXIT)
         {
             return this.FollowPath();
         }
@@ -147,8 +147,18 @@ public class EscaperAI : MonoBehaviour, IMovementInput
         }
 
         // reached the target
-        this.fsmState.UpdateState(EscaperFSM.EscaperState.IDLE);
+        this.fsmState = EscaperState.IDLE;
 
         return MovementState.IDLE;
+    }
+
+
+
+    ///// AI States
+    public enum EscaperState
+    {
+        IDLE,
+        TO_EXIT,
+        FLEEING,
     }
 }
