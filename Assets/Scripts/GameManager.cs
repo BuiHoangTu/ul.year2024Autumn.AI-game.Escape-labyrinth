@@ -143,6 +143,14 @@ public class GameManager : MonoBehaviour
         return new Vector2Int(pos.x, pos.y);
     }
 
+    /// <summary>
+    /// Convert a position on the map to world position
+    /// </summary>
+    public Vector2 GetWorldPosition(Vector2Int posOnMap)
+    {
+        return this.map.CellToWorld(new Vector3Int(posOnMap.x, posOnMap.y, 0));
+    }
+
 
     public (Vector2Int, Vector2Int) GetMapLimits()
     {

@@ -16,15 +16,15 @@ public class FinderAI : MonoBehaviour, IMovementInput
     private FinderState fsmState;
     private MovementFSM movementFSM;
     private GameManager gameManager;
-    
+
     // for choosing patrol position
     private Vector2Int[] exits;
     private int guardingExitIndex;
     private Vector2Int targetPos;
-    
+
     // for changing patrol position
     private float timeToChangePatrolPos;
-    
+
     // for turn 1 round
     private float observingAngleLeft;
     private float lastAngle;
@@ -90,7 +90,7 @@ public class FinderAI : MonoBehaviour, IMovementInput
         if (this.timeToChangePatrolPos <= 0)
         {
             this.timeToChangePatrolPos = this.ChangingPatrolPosTime;
-            
+
             while (true)
             {
                 this.guardingExitIndex = Random.Range(0, this.exits.Length);
@@ -150,19 +150,21 @@ public class FinderAI : MonoBehaviour, IMovementInput
     {
         if (this.currentPathIndex < this.path.Count)
         {
-            Vector2Int nextPos = this.path[this.currentPathIndex];
-            Vector2Int currPos = this.gameManager.GetPositionOnMap(this.transform.position);
+            Vector2 nextPos = this.gameManager.GetWorldPosition(this.path[this.currentPathIndex]);
+            nextPos += new Vector2(0.5f, 0.5f); // center of the cell
 
-            if (currPos == nextPos)
+            Vector2 currPos = this.transform.position;
+
+            Vector2 deltaPos = nextPos - currPos;
+            
+            if ((deltaPos.x * deltaPos.x + deltaPos.y * deltaPos.y) < 0.1)
             {
                 this.currentPathIndex++;
                 if (this.currentPathIndex < this.path.Count)
                     nextPos = this.path[this.currentPathIndex];
             }
 
-            Vector2Int direction = nextPos - currPos;
-
-            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            float targetAngle = Mathf.Atan2(deltaPos.y, deltaPos.x) * Mathf.Rad2Deg;
             targetAngle -= 90; // adjust angle to match the map direction
 
             // delta angle > angle threshold, need to rotate
