@@ -155,7 +155,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
 
 
     ///// AI States
-    public enum EscaperState
+    private enum EscaperState
     {
         IDLE,
         TO_EXIT,
