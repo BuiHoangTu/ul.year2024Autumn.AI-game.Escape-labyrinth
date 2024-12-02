@@ -96,14 +96,23 @@ public class EscaperAI : MonoBehaviour, IMovementInput
             Vector2Int nextPos = this.path[this.currentPathIndex];
             Vector2Int currPos = this.gameManager.GetPositionOnMap(this.transform.position);
 
+            if (currPos == nextPos)
+            {
+                this.currentPathIndex++;
+                nextPos = this.path[this.currentPathIndex];
+            }
+
             Vector2Int direction = nextPos - currPos;
 
             float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            targetAngle -= 90; // adjust angle to match the map direction
 
             // delta angle > 20 degrees, need to rotate
-            float deltaAngle = Mathf.DeltaAngle(this.transform.rotation.eulerAngles.z, targetAngle);
+            float deltaAngle = Mathf.DeltaAngle(this.movementFSM.headingAngle, targetAngle);
             if (Mathf.Abs(deltaAngle) > 20)
             {
+                Debug.Log("Self: " + currPos + " Target: " + nextPos + " Target Angle: " + targetAngle + " Current Angle: " + this.movementFSM.headingAngle + " Delta Angle: " + deltaAngle);
+
                 if (deltaAngle < 0)
                 {
                     return MovementState.TURN_RIGHT;
