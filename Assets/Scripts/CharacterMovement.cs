@@ -20,23 +20,36 @@ public class CharacterMovement : MonoBehaviour
     private float burstEnergy;
     private bool needRechargeBurst;
     private IMovementInput movementController;
-    private Vector3 heading;
     private Rigidbody2D rb;
     private MovementState moveState;
-    private GameObject headingIndicator;
-    private MovementFSM movementFSM;
+    public MovementFSM movementFSM { get; private set; }
 
 
     // Start is called before the first frame update
     void Start()
     {
-        this.heading = this.transform.up;
         this.rb = this.GetComponent<Rigidbody2D>();
-        this.headingIndicator = this.transform.Find("HeadingIndicator").gameObject;
+        if (this.rb == null)
+        {
+            Debug.LogError("Rigidbody2D not found!");
+        }
+
+        this.movementController = this.GetComponent<IMovementInput>();
+        if (this.movementController == null)
+        {
+            Debug.LogError("IMovementInput not found!");
+        }
         this.movementController.keyMoveType = this.keyMoveType;
+
         this.burstEnergy = this.maxBurstEnergy;
         this.needRechargeBurst = false;
-        this.movementFSM = new();
+
+        float angle = this.transform.rotation.eulerAngles.z;
+        this.movementFSM = new(angle);
+        if (this.movementFSM == null)
+        {
+            Debug.LogError("MovementFSM not found!");
+        }
 
         // Modify based on Tag
         if (this.CompareTag("Escaper"))
@@ -76,7 +89,12 @@ public class CharacterMovement : MonoBehaviour
             _ => 0
         };
 
-        this.rb.velocity = this.heading * currentSpeed;
+        // Vector3 heading = this.movementFSM.headingAngle * Vector3.up;
+
+        float radAngle = Mathf.Deg2Rad * this.movementFSM.headingAngle;
+        Vector3 heading = new(-Mathf.Sin(radAngle), Mathf.Cos(radAngle), 0);
+
+        this.rb.velocity = heading * currentSpeed;
     }
 
     private void RotateEvaluate()
@@ -88,8 +106,10 @@ public class CharacterMovement : MonoBehaviour
             _ => 0
         };
 
-        this.heading = Quaternion.Euler(0, 0, angle) * this.heading;
-        this.transform.rotation = Quaternion.LookRotation(Vector3.forward, this.heading);
+        // this.heading = Quaternion.Euler(0, 0, angle) * this.heading;
+        // apply on fsm instead
+        this.movementFSM.headingAngle += angle;
+        this.transform.rotation = Quaternion.Euler(0, 0, this.movementFSM.headingAngle);
     }
 
     private void BurstEvaluate()
@@ -134,7 +154,7 @@ public class CharacterMovement : MonoBehaviour
     }
 
 
-    ///// Getters and Setters /////
+    ///// Getters and Setters (deprecated) /////
     public MovingType Move
     {
         get => this.moveState switch

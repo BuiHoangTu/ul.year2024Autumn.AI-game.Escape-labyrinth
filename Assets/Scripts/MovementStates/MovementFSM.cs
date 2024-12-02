@@ -3,11 +3,31 @@ using UnityEngine;
 public class MovementFSM
 {
     public MovementState currentState { get; private set; }
+    public float headingAngle
+    {
+        get => this._headingAngle;
+        set
+        {
+            this._headingAngle = value;
+            if (this._headingAngle < 0)
+            {
+                this._headingAngle += 360;
+            }
+            if (this._headingAngle >= 360)
+            {
+                this._headingAngle -= 360;
+            }
+        }
+    }
 
 
-    public MovementFSM()
+    private float _headingAngle;
+
+
+    public MovementFSM(float headingAngle)
     {
         this.currentState = MovementState.IDLE;
+        this.headingAngle = headingAngle;
     }
 
     public bool TurnLeft()
