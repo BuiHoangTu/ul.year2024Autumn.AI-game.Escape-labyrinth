@@ -113,7 +113,7 @@ public class EscaperAI : MonoBehaviour, IMovementInput
 
 
             float targetAngle = Mathf.Atan2(deltaPos.y, deltaPos.x) * Mathf.Rad2Deg;
-            // targetAngle -= 90; // adjust angle to match the map direction
+            targetAngle -= 90; // adjust angle to match the map direction
 
             // delta angle > angle threshold, need to rotate
             float deltaAngle = Mathf.DeltaAngle(this.movementFSM.headingAngle, targetAngle);
