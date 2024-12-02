@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: MaxAngleDelta
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 8287006180943180286, guid: 8af1d07948740f3769d4a3b08372e381, type: 3}
+      propertyPath: m_RayLength
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
