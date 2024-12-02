@@ -18,14 +18,13 @@ public class CharacterMovement : MonoBehaviour
 
 
     private float burstEnergy;
-    private bool isBursting;
     private bool needRechargeBurst;
-    private readonly MovementInput movementController = new();
+    private IMovementInput movementController;
     private Vector3 heading;
     private Rigidbody2D rb;
-    private MovingType moving;
-    private TurningType turning;
+    private MovementState moveState;
     private GameObject headingIndicator;
+    private MovementFSM movementFSM;
 
 
     // Start is called before the first frame update
@@ -36,8 +35,8 @@ public class CharacterMovement : MonoBehaviour
         this.headingIndicator = this.transform.Find("HeadingIndicator").gameObject;
         this.movementController.keyMoveType = this.keyMoveType;
         this.burstEnergy = this.maxBurstEnergy;
-        this.isBursting = false;
         this.needRechargeBurst = false;
+        this.movementFSM = new();
 
         // Modify based on Tag
         if (this.CompareTag("Escaper"))
@@ -58,9 +57,7 @@ public class CharacterMovement : MonoBehaviour
 
         if (this.keyMoveType != KeyMoveType.NONE)
         {
-            this.moving = this.movementController.GetMovementInput();
-            this.turning = this.movementController.GetRotationInput();
-            this.isBursting = this.movementController.GetBurstInput();
+            this.moveState = this.movementController.HandleInput();
         }
 
         this.BurstEvaluate();
@@ -70,28 +67,24 @@ public class CharacterMovement : MonoBehaviour
 
     private void MoveEvaluate()
     {
-        float currentSpeed = moving switch
+        float currentSpeed = this.moveState switch
         {
-            MovingType.FORWARD => this.speed,
-            MovingType.BACKWARD => -this.speed,
+            MovementState.MOVE_FORWARD => this.speed,
+            MovementState.MOVE_BACKWARD => -this.speed,
+            MovementState.BURST_FORWARD => this.speed * this.burstMultiplier,
+            MovementState.BURST_BACKWARD => -this.speed * this.burstMultiplier,
             _ => 0
         };
-
-        // Apply burst multiplier if bursting
-        if (isBursting)
-        {
-            currentSpeed *= this.burstMultiplier;
-        }
 
         this.rb.velocity = this.heading * currentSpeed;
     }
 
     private void RotateEvaluate()
     {
-        float angle = turning switch
+        float angle = this.moveState switch
         {
-            TurningType.RIGHT => -this.angularSpeed * Time.deltaTime,
-            TurningType.LEFT => this.angularSpeed * Time.deltaTime,
+            MovementState.TURN_RIGHT => -this.angularSpeed * Time.deltaTime,
+            MovementState.TURN_LEFT => this.angularSpeed * Time.deltaTime,
             _ => 0
         };
 
@@ -102,7 +95,7 @@ public class CharacterMovement : MonoBehaviour
     private void BurstEvaluate()
     {
         // Using Burst
-        if (this.isBursting && this.moving != MovingType.STOP)
+        if (this.moveState == MovementState.BURST_FORWARD || this.moveState == MovementState.BURST_BACKWARD)
         {
             this.burstEnergy -= this.burstConsumptionRate * Time.deltaTime;
             if (this.burstEnergy <= 0)
@@ -130,13 +123,10 @@ public class CharacterMovement : MonoBehaviour
         {
             return;
         }
-        this.isBursting = true;
     }
 
     private void StopBurst()
     {
-        this.isBursting = false;
-
         if (this.burstEnergy <= this.maxBurstEnergy * 1 / 2)
         {
             this.needRechargeBurst = true;
@@ -147,30 +137,46 @@ public class CharacterMovement : MonoBehaviour
     ///// Getters and Setters /////
     public MovingType Move
     {
-        get => this.moving;
-        set => this.moving = value;
+        get => this.moveState switch
+        {
+            MovementState.MOVE_FORWARD => MovingType.FORWARD,
+            MovementState.MOVE_BACKWARD => MovingType.BACKWARD,
+            _ => MovingType.STOP
+        };
+        set => this.moveState = value switch
+        {
+            MovingType.FORWARD => MovementState.MOVE_FORWARD,
+            MovingType.BACKWARD => MovementState.MOVE_BACKWARD,
+            _ => MovementState.IDLE
+        };
     }
 
     public TurningType Turn
     {
-        get => this.turning;
-        set => this.turning = value;
+        get => this.moveState switch
+        {
+            MovementState.TURN_LEFT => TurningType.LEFT,
+            MovementState.TURN_RIGHT => TurningType.RIGHT,
+            _ => TurningType.STOP
+        };
+        set => this.moveState = value switch
+        {
+            TurningType.LEFT => MovementState.TURN_LEFT,
+            TurningType.RIGHT => MovementState.TURN_RIGHT,
+            _ => MovementState.IDLE
+        };
     }
 
     public bool Bursting
     {
-        get => this.isBursting;
-        set
+        get => this.moveState switch
         {
-            if (value)
-            {
-                this.StartBurst();
-            }
-            else
-            {
-                this.StopBurst();
-            }
-        }
+            MovementState.BURST_FORWARD => true,
+            MovementState.BURST_BACKWARD => true,
+            _ => false
+        };
+        // ignore set
+        set { }
     }
 
     public float BurstEnergyPercentage
