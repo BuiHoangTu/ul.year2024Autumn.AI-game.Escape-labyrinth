@@ -1,0 +1,96 @@
+\documentclass[a4paper,12pt]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Page Setup
+\geometry{margin=1in}
+
+% Code Snippet Settings
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{lightgray!20},
+    frame=single,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!70!black},
+    stringstyle=\color{red},
+}
+
+% Title Section
+\title{Unity RTS Unit Report: Pathfinding and FSM \\ \small Word Count: XXX \\ Student ID: XXXXXXXX}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+
+% Title Page
+\maketitle
+\tableofcontents
+\newpage
+
+% Sections
+\section{Introduction}
+\subsection{Game Overview}
+Introduce the RTS unit as the artefact, detailing the AI techniques implemented (Pathfinding and FSM) to solve the problem of unit behavior in an RTS game.
+
+\subsection{Comparative Analysis}
+Compare your implementation with similar mechanics in contemporary games and insights from literature. Mention any inspiration or benchmarks you aimed to meet.
+
+\section{Analysis}
+\subsection{Rationale for Techniques}
+Explain why you chose specific techniques (e.g., NavMesh for pathfinding, FSM for behavior modeling). Back up your choices with references to academic research or practical considerations.
+
+\subsection{Understanding and Implementation}
+Demonstrate your understanding of the chosen techniques by providing:
+\begin{itemize}
+    \item A brief explanation of the concepts (e.g., how FSMs work).
+    \item High-level details of how you implemented these techniques in Unity.
+\end{itemize}
+
+\section{Reflection}
+\subsection{Results and Behavior}
+Discuss the outcomes of your implementation:
+\begin{itemize}
+    \item How well the RTS unit behaved according to expectations.
+    \item Examples of scenarios where the AI worked as intended.
+\end{itemize}
+
+\subsection{Issues and Limitations}
+Highlight challenges faced during implementation, such as:
+\begin{itemize}
+    \item Edge cases (e.g., units getting stuck during pathfinding).
+    \item Limitations of the FSM model or the pathfinding system.
+\end{itemize}
+
+\subsection{Alternative Solutions and Improvements}
+Suggest possible improvements or alternative techniques, referencing research or practical solutions. Discuss future directions for enhancing unit AI.
+
+\section{Conclusion}
+\subsection{Summary}
+Summarize the contributions of the report, including insights into the techniques and their implementation.
+
+\subsection{Critical Reflection}
+Reflect on your individual performance in the project:
+\begin{itemize}
+    \item What went well.
+    \item Areas for improvement.
+\end{itemize}
+
+\section*{References}
+List all references used in the report in a standard format (e.g., IEEE, APA).
+
+\section*{Appendices (Optional)}
+\subsection*{Code Snippets}
+Include any relevant code snippets or detailed diagrams.
+
+\end{document}

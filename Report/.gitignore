@@ -1,0 +1,14 @@
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.gz
+*.out
+*.pdf
+*.toc
+
+## vscode 
+.vscode/**
+
+# local tests
+test*
