@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class EscaperAI : MonoBehaviour, IMovementInput
 {
+    public float MaxAngleDelta = 20.0f;
+    public float RandomTurnChance = 50.0f;
+
+
     private PathFinder pathFinder;
     private List<Vector2Int> path;
     private int currentPathIndex;
@@ -99,7 +103,8 @@ public class EscaperAI : MonoBehaviour, IMovementInput
             if (currPos == nextPos)
             {
                 this.currentPathIndex++;
-                nextPos = this.path[this.currentPathIndex];
+                if (this.currentPathIndex < this.path.Count)
+                    nextPos = this.path[this.currentPathIndex];
             }
 
             Vector2Int direction = nextPos - currPos;
@@ -107,9 +112,9 @@ public class EscaperAI : MonoBehaviour, IMovementInput
             float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             targetAngle -= 90; // adjust angle to match the map direction
 
-            // delta angle > 20 degrees, need to rotate
+            // delta angle > angle threshold, need to rotate
             float deltaAngle = Mathf.DeltaAngle(this.movementFSM.headingAngle, targetAngle);
-            if (Mathf.Abs(deltaAngle) > 20)
+            if (Mathf.Abs(deltaAngle) > this.MaxAngleDelta)
             {
                 Debug.Log("Self: " + currPos + " Target: " + nextPos + " Target Angle: " + targetAngle + " Current Angle: " + this.movementFSM.headingAngle + " Delta Angle: " + deltaAngle);
 
@@ -121,6 +126,20 @@ public class EscaperAI : MonoBehaviour, IMovementInput
                 {
                     return MovementState.TURN_LEFT;
                 }
+            }
+
+            // random chance to turn
+            if (Random.Range(0, 100) < this.RandomTurnChance)
+            {
+                if (deltaAngle < - 1/2 * this.MaxAngleDelta)
+                    return MovementState.TURN_RIGHT;
+                if (deltaAngle > 1/2 * this.MaxAngleDelta)
+                    return MovementState.TURN_LEFT;
+
+                if (deltaAngle < 0)
+                    return MovementState.TURN_LEFT;
+                if (deltaAngle > 0)
+                    return MovementState.TURN_RIGHT;
             }
 
             // move forward
