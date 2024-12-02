@@ -59,7 +59,7 @@ The game consists of 4 main entities:
     The Finders have superior base speed (10\%) compared to the Escaper allowing them to cover more ground.
     They are also capable of informing each other of the Escaper's location when one spots it.
     Their pursuit is aided by a limited burst of speed (30\%) which while not as fast as the Escaper's speed burst, is enough to help keeping track of the Escaper.
-    After the burst wornout for both parties, the Finders are mostly guaranteed to catch the Escaper.
+    After the burst wears out for both parties, the Finders are mostly guaranteed to catch the Escaper.
     
     \item Escaper: 
     The Escaper is a single unit attempting to reach one of the three exits on the map.
@@ -135,7 +135,7 @@ They both share the same sets of movement states:
     \item Burst Forward: The unit moves forward at a faster speed. It is useful for chasing. After the duration, the unit will return to the Forward state.
     \item Burst Backward: The unit moves backward at a faster speed. After the duration, the unit will return to the Backward state.
 \end{itemize}
-While most of the states are free to transition to any other states, Burst will be transitioned to Forward or Backward when they don't have Burst energy left.
+While most of the states are free to transition to any other states, once the Burst energy is exhausted, the unit transitions back to its normal movement states (Forward or Backward)
 
 
 \subsection{Challenging in Implementation}
@@ -144,50 +144,54 @@ Some proposed methods like using transition tables not only made the code more b
 So my choice was to use a more flexible approach where each state is responsible for deciding the next state based on the current conditions.
 
 Another challenge was the implementation of the Flee state. 
-At first, I made the Escaper run away when it sees a Finder.
-But this made the character keep running back and forth because the pathfinder was directing it to the same way after Flee ended.
-To solve this, I expanded pathfinder to register the dangerous spots and avoid them when calculating the path.
+Initially, It was designed to run away when it sees a Finder.
+The Escaper would continuously flee from the Finder without finding a safe route, causing it to get stuck in a loop. I solved this by updating the pathfinding system to mark dangerous areas and avoid them.
 Still, the Escaper sometimes got stuck in that state even though it happened less frequently.
 Turned out, while the pathfinder found another way, it still involved moving near the Finder.
-So I make the Escaper more "brave" by making it only flee when the Finder is going to see it.
+To improve the Escaper's behavior, I adjusted its fleeing logic so that it only flees when it is in immediate danger of being seen by the Finder.
 Now, it can even walk behind the Finder's back.
 
 
 
 \section{Reflection}
 \subsection{Results and Behavior}
-Discuss the outcomes of your implementation:
-\begin{itemize}
-    \item How well the RTS unit behaved according to expectations.
-    \item Examples of scenarios where the AI worked as intended.
-\end{itemize}
+% Discuss the outcomes of your implementation:
+% \begin{itemize}
+%     \item How well the RTS unit behaved according to expectations.
+%     \item Examples of scenarios where the AI worked as intended.
+% \end{itemize}
+The implementation of the FSM and pathfinding algorithms resulted in the expected behavior of the units.
+The Escaper chooses the nearest exit but on sight of a Finder, it will choose another route.
+Fleeing with high burst speed helped the Escaper to run away multiple times and find another path.
+The Finders patrol the exits and chase the Escaper when spotted.
+When one Finder sees the Escaper, all Finders will start chasing it.
+The Observe state gains some win to the Finders as they can find the target hiding at the corner of the map.
 
-\subsection{Issues and Limitations}
-Highlight challenges faced during implementation, such as:
-\begin{itemize}
-    \item Edge cases (e.g., units getting stuck during pathfinding).
-    \item Limitations of the FSM model or the pathfinding system.
-\end{itemize}
 
-\subsection{Alternative Solutions and Improvements}
-Suggest possible improvements or alternative techniques, referencing research or practical solutions. Discuss future directions for enhancing unit AI.
+\subsection{Limitations and Improvements}
+When being chased into a dead-end, while the Finders can't see the Escaper and leave, the Escaper will stay there forever because its only exit is marked as dangerous.
+One possible solution is to add a timer to the dangerous area, after a certain amount of time, the area will be marked as safe.
+
+In the same example above, while it is obvious that the Escaper has no other way to escape, the Finders leave because they can't see the Escaper in their blind spot.
+To address this problem, a heuristic can be integrated into the pathfinding system to predict the Escaper's possible location based on the last seen position.
+However, it is clear that it needs a lot of effort to implement and is resource-consuming.
+
+In addition, the dangerous area is currently marked as a circle around the Finder's position.
+This is not ideal as they possess a cone of vision.
+The area in front of the Finder should be marked dangerous instead.
+
+
 
 \section{Conclusion}
-\subsection{Summary}
-Summarize the contributions of the report, including insights into the techniques and their implementation.
+The development of this Real-Time Strategy (RTS) game demonstrates the effective application of Artificial Intelligence techniques, specifically Finite State Machines (FSMs) and pathfinding algorithms, to create intelligent and dynamic game agent behaviors. 
+The FSM model allowed for clear and adaptable behaviors, with both the Escaper and Finders demonstrating intelligent decision-making processes based on their states. The behavior of the units, including patrolling, chasing, and fleeing, aligned well with the intended game design.
 
-\subsection{Critical Reflection}
-Reflect on your individual performance in the project:
-\begin{itemize}
-    \item What went well.
-    \item Areas for improvement.
-\end{itemize}
+The use of A* and Breadth-First Search (BFS) pathfinding algorithms enabled sophisticated navigation for both the Escaper and Finders. The A* algorithm, with its ability to find the most efficient path by balancing current path cost and estimated goal distance, proved particularly valuable for strategic movement. Similarly, the FSM approach allowed for clear, modular state management that could adapt to changing game conditions.
 
-\section*{References}
-List all references used in the report in a standard format (e.g., IEEE, APA).
+While the implementation met its primary objectives, the project also revealed potential areas for future enhancement. Proposed improvements include developing more sophisticated dangerous area marking, implementing predictive pathfinding heuristics, and refining unit behaviors in edge cases such as dead-end scenarios.
 
-\section*{Appendices (Optional)}
-\subsection*{Code Snippets}
-Include any relevant code snippets or detailed diagrams.
+
+
+
 
 \end{document}
