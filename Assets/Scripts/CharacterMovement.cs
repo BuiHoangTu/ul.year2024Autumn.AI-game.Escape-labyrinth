@@ -25,7 +25,17 @@ public class CharacterMovement : MonoBehaviour
     public MovementFSM movementFSM { get; private set; }
 
 
-    // Start is called before the first frame update
+    void Awake()
+    {
+        float angle = this.transform.rotation.eulerAngles.z;
+        this.movementFSM = new(angle);
+        if (this.movementFSM == null)
+        {
+            Debug.LogError("MovementFSM not found!");
+        }
+    }
+
+
     void Start()
     {
         this.rb = this.GetComponent<Rigidbody2D>();
@@ -43,13 +53,6 @@ public class CharacterMovement : MonoBehaviour
 
         this.burstEnergy = this.maxBurstEnergy;
         this.needRechargeBurst = false;
-
-        float angle = this.transform.rotation.eulerAngles.z;
-        this.movementFSM = new(angle);
-        if (this.movementFSM == null)
-        {
-            Debug.LogError("MovementFSM not found!");
-        }
 
         // Modify based on Tag
         if (this.CompareTag("Escaper"))
